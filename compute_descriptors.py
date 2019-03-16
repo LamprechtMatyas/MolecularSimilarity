@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Compute RDKit descriptors for molecules/fragments.
 Usage:
     python compute_descriptors.py
@@ -21,9 +22,8 @@ import rdkit
 import rdkit.Chem
 from rdkit.Chem import Descriptors
 
-import my_library
+import inputoutput_utils
 
-__LICENSE__ = "MIT"
 
 # region Descriptors definition
 
@@ -420,15 +420,26 @@ _FUNCTIONS = [
 # endregion Descriptors definition
 
 
+def _main():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s [%(levelname)s] %(module)s - %(message)s",
+        datefmt="%H:%M:%S")
+    configuration = _read_configuration()
+    #
+    use_fragments = "fragments" in configuration and configuration["fragments"]
+    compute_descriptors(configuration["input"], configuration["output"], use_fragments)
+
+
 # Get and return application settings.
 def _read_configuration() -> dict:
     parser = argparse.ArgumentParser(
         description="Compute RDKit descriptors for given"
                     "molecules/fragments.")
     parser.add_argument("-i", type=str, dest="input",
-                        help="input 3 JSON files", required=True)
+                        help="input 3 comma separated JSON files", required=True)
     parser.add_argument("-o", type=str, dest="output",
-                        help="output 3 CSV files", required=True)
+                        help="output 3 comma separated CSV files", required=True)
     parser.add_argument("--fragments", dest="fragments",
                         help="use fragments instead of molecules",
                         action="store_true", required=False)
@@ -453,20 +464,11 @@ def _read_configuration() -> dict:
     return configuration
 
 
-# write file header
-def _write_header(output_stream: TextIO, use_fragments: bool, used_features_names: list):
-    output_stream.write("smiles,")
-    if use_fragments:
-        output_stream.write("index,")
-    output_stream.write(",".join(used_features_names))
-    output_stream.write("\n")
-
-
 # Compute descriptors for molecules/fragments in given input file.
 def compute_descriptors(input_files: list, output_files: list, use_fragments: bool,
                         features_to_use=[]):
     for output_file in output_files:
-        my_library.create_parent_directory(output_file)
+        inputoutput_utils.create_parent_directory(output_file)
     # Pick features to use.
     if features_to_use == [] or features_to_use is None:
         used_features_names = _NAMES
@@ -482,9 +484,9 @@ def compute_descriptors(input_files: list, output_files: list, use_fragments: bo
     count_molecules = 0
     num = -1
     for input_file in input_files:
-        with open(input_file, "r") as streami:
+        with open(input_file, "r", encoding="utf-8") as streami:
             num += 1
-            with open(output_files[num], "w") as stream:
+            with open(output_files[num], "w", encoding="utf-8") as stream:
                 _write_header(stream, use_fragments, used_features_names)
                 for line in streami:
                     molecule = json.loads(line)
@@ -528,23 +530,17 @@ def compute_descriptors(input_files: list, output_files: list, use_fragments: bo
     logging.info("Invalid molecules: %d/%d", number_of_invalid, count_molecules)
 
 
-def _main():
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s [%(levelname)s] %(module)s - %(message)s",
-        datefmt="%H:%M:%S")
-    configuration = _read_configuration()
-    #
-    use_fragments = "fragments" in configuration and configuration["fragments"]
-    compute_descriptors(configuration["input"], configuration["output"], use_fragments)
+# write file header
+def _write_header(output_stream: TextIO, use_fragments: bool, used_features_names: list):
+    output_stream.write("smiles,")
+    if use_fragments:
+        output_stream.write("index,")
+    output_stream.write(",".join(used_features_names))
+    output_stream.write("\n")
 
 
 if __name__ == "__main__":
     _main()
-
-
-
-
 
 
 
