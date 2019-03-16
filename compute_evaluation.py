@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """"
 evaluation of model, computing AUC, EF...
 
@@ -11,20 +12,29 @@ import json
 
 from rdkit.ML.Scoring import Scoring
 
-import my_library
+import inputoutput_utils
+
+
+def _main():
+    configuration = _read_configuration()
+    score_act = read_file_with_score_and_activity(configuration["input"])
+    activity = sort_activity(score_act)
+    evaluation(activity, configuration["output"])
 
 
 def _read_configuration() -> dict:
     parser = argparse.ArgumentParser(description="model evaluation "
                                                  "See file header for more details.")
-    parser.add_argument("-i", type=str, dest="input", required=True)
-    parser.add_argument("-o", type=str, dest="output", required=True)
+    parser.add_argument("-i", type=str, dest="input",
+                        help="input json file with name, score, activity", required=True)
+    parser.add_argument("-o", type=str, dest="output",
+                        help="output json file", required=True)
     return vars(parser.parse_args())
 
 
-def read_file(input_file: str) -> list:
+def read_file_with_score_and_activity(input_file: str) -> list:
     score_activity = []
-    with open(input_file, "r") as stream:
+    with open(input_file, "r", encoding="utf-8") as stream:
         for line_num, line in enumerate(stream):
             molecule = json.loads(line)
             score_activity.append([molecule["score"]])
@@ -35,13 +45,13 @@ def read_file(input_file: str) -> list:
 def sort_activity(score_activity: list) -> list:
     score_activity = sorted(score_activity, reverse=True)
     return [
-        [score_activity[i][1]]
-        for i in range(len(score_activity))
+        [item[1]]
+        for item in score_activity
     ]
 
 
 def evaluation(activity_arr: list, output_file: str):
-    my_library.create_parent_directory(output_file)
+    inputoutput_utils.create_parent_directory(output_file)
     auc = Scoring.CalcAUC(activity_arr, 0)
     ef1 = Scoring.CalcEnrichment(activity_arr, 0, [0.01])
     ef5 = Scoring.CalcEnrichment(activity_arr, 0, [0.05])
@@ -54,15 +64,8 @@ def evaluation(activity_arr: list, output_file: str):
         "RIE": rie,
         "BEDROC": bedroc
     }
-    with open(output_file, "w") as stream:
+    with open(output_file, "w", encoding="utf-8") as stream:
         json.dump(output, stream)
-
-
-def _main():
-    configuration = _read_configuration()
-    score_act = read_file(configuration["input"])
-    activity = sort_activity(score_act)
-    evaluation(activity, configuration["output"])
 
 
 if __name__ == "__main__":
