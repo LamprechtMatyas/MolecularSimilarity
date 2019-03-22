@@ -28,5 +28,7 @@ your own configuration.json file or you can use one of these connfiguration file
 that are stored in data folder.
 
 For comparing the outputs of more models you can use scripts that have got "graph"
-or "graphs" in the name (e.g. print_graph.py or print_evaluation_graphs.py), that
-will show you outputs of compute_evaluation.py or run_all_scripts in graphical way.
+or "graphs" in the name (e.g. print_graph.py or print_evaluation_graphs.py).
+Some of them use output from different models from script compute_evaluation.py
+or run_all_scripts.py as input files, some of them use output file from different
+models from add_activity.py as input files. Which input files to use, see the script beginnig.
