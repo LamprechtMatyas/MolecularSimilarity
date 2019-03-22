@@ -13,7 +13,7 @@ git clone https://github.com/LamprechtMatyas/MolecularSimilarity.git
 Program can be used in 2 ways - script by script or run_all_scripts:
 1) script by script: If you want to see intermediate results you can run scripts in order:
     extract_fragments.py -> compute_descriptors.py -> create_model.py ->   
-    -> score_molecules.py -> add_activity.py -> compute_evaluation.py
+    -> score_molecules.py -> add_activity.py -> compute_evaluation.py. 
     At the beginning of each script is a description of the input files and other requirements.
 2) run_all_scripts: If you want to run whole process, then use run_all_scripts.py.
     You will get same results as in first case after running compute_evaluation.py.
