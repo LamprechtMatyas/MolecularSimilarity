@@ -21,7 +21,7 @@ def _main():
                  configuration["output_file"])
 
 
-def _read_configuration():
+def _read_configuration() -> dict:
     parser = argparse.ArgumentParser(description="Active molecule scoring by different models. "
                                                  "See file header for more details.")
     parser.add_argument("-a", type=str, dest="input_activity",
