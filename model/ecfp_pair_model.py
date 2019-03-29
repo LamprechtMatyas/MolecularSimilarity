@@ -29,7 +29,8 @@ class EcfpPairModel(IModel):
                 for item in line["fragments"]:
                     if item["index"] not in active_indexes:
                         active_indexes.append(item["index"])
-        if (int(model_configuration["pair"][0]) in active_indexes) and (int(model_configuration["pair"][1]) in active_indexes):
+        if (int(model_configuration["pair"][0]) in active_indexes) and\
+                (int(model_configuration["pair"][1]) in active_indexes):
             active_indexes.remove(int(model_configuration["pair"][0]))
             active_indexes.remove(int(model_configuration["pair"][1]))
             active_indexes.append(model_configuration["pair"])
