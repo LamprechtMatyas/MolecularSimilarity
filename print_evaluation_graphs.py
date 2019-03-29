@@ -19,14 +19,7 @@ import print_graph
 
 def _main():
     configuration = _read_configuration()
-    keys = []
-    with open(configuration["input_evaluation"][0], "r", encoding="utf-8") as input_stream:
-        for new_line in input_stream:
-            line = json.loads(new_line)
-            keys = line.keys()
-    for item in keys:
-        print_graph.print_graph(configuration["input_evaluation"], configuration["directory"],
-                                configuration["nicknames"], item)
+    print_graphs(configuration)
 
 
 def _read_configuration() -> dict:
@@ -59,6 +52,17 @@ def _read_configuration() -> dict:
         print("Wrong input, the number of nicknames must be equal to the number of input files")
         exit(1)
     return configuration
+
+
+def print_graphs(configuration: dict):
+    keys = []
+    with open(configuration["input_evaluation"][0], "r", encoding="utf-8") as input_stream:
+        for new_line in input_stream:
+            line = json.loads(new_line)
+            keys = line.keys()
+    for item in keys:
+        print_graph.print_graph(configuration["input_evaluation"], configuration["directory"],
+                                configuration["nicknames"], item)
 
 
 if __name__ == "__main__":
