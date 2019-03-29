@@ -78,7 +78,9 @@ def print_graph(activity_files: list, directory: str, nicknames: list, input_typ
     else:
         file_name = input_type.upper() + ".png"
     inputoutput_utils.create_parent_directory(file_name)
-    plt.savefig(file_name)
+    plt.xticks(rotation=90, fontsize="x-small")
+    plt.tight_layout()
+    plt.savefig(file_name, dpi=150)
     plt.figure()
 
 
