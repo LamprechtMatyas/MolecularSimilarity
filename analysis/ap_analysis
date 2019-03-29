@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """"
-Takes 2 nbits as input argument and input file with molecules that we want to compare.
+Takes 2 nbits as input arguments and input file with molecules that we want to compare.
 We use atom pair fingerprints that are hashed and then we print the comparison of
 each molecule to the output file.
 """
