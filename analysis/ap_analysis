@@ -44,13 +44,14 @@ def _main():
 
 def _read_configuration() -> dict:
     parser = argparse.ArgumentParser(description="ap analysis")
-    parser.add_argument("-f", type=str, dest="first_nbit",
+    parser.add_argument("-f", type=str, dest="first_nbit", help="write number",
                         required=True)
-    parser.add_argument("-s", type=str, dest="second_nbit",
+    parser.add_argument("-s", type=str, dest="second_nbit", help="write number",
                         required=True)
-    parser.add_argument("-i", type=str, dest="input_file",
+    parser.add_argument("-i", type=str, dest="input_file", help="input smi file with molecules",
                         required=True)
-    parser.add_argument("-o", type=str, dest="output_file", required=True)
+    parser.add_argument("-o", type=str, dest="output_file", help="output txt file",
+                        required=True)
     return vars(parser.parse_args())
 
 
