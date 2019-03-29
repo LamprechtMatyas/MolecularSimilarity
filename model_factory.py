@@ -25,3 +25,12 @@ def _discover_models():
     import model.active_inactive_index_model
     import model.linear_regression_model
     import model.decision_tree_model
+    import model.nbit_ecfp_model
+    import model.nbit_fcfp_model
+    import model.nbit_ap_model
+    import model.nbit_ecfp_model2
+    import model.nbit_fcfp_model2
+    import model.nbit_tt_model
+    import model.equivalent_class_model
+    import model.baseline_model
+    import model.ecfp_pair_model
