@@ -70,3 +70,27 @@ def difference_of_equivalence(ekv1: list, intersection: list, position: int) -> 
             difference.append(item)
     return difference
 
+
+def make_table(all_fragments: list, difference1: list, difference2: list) -> list:
+    table = [[item] for item in all_fragments]
+    two_column_table = append_column(table, difference1, 1)
+    three_column_table = append_column(two_column_table, difference2, 2)
+    return three_column_table
+
+
+def append_column(table: list, diff: list, length: int) -> list:
+    num_class = 1
+    for item in diff:
+        for index in item[1:]:
+            for frag in table:
+                if (frag[0] == index) and (len(frag) == length):
+                    frag.append(num_class)
+        num_class += 1
+    return table
+
+
+def all_fragments_in_different_classes(fragments_in_classes: list) -> list:
+    all_fragments = []
+    for item in fragments_in_classes:
+        all_fragments.extend(item[1:])
+    return all_fragments
