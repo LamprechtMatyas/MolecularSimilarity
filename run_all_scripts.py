@@ -108,8 +108,8 @@ def _read_configuration() -> dict:
     parser.add_argument("-f", type=str, dest="fragments",
                         help="optional, comma separated list of fragments", required=False)
     parser.add_argument("-p", type=str, dest="input_type",
-                        help="type of input files with molecules smi/sdf, default is sdf",
-                        default="sdf")
+                        help="type of input files with molecules smi/sdf, default is smi",
+                        default="smi")
     parser.add_argument("-d", dest="directory",
                         help="directory where to store intermediate results", required=False)
     parser.add_argument("--kekule", dest="kekule", help="kekule option",
