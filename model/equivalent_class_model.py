@@ -56,8 +56,7 @@ class EquivalentClassModel(IModel):
             fr = []
             i = 0
             while i < len(equivalence_class):
-                fr1 = []
-                fr1.append(equivalence_class[i])
+                fr1 = [equivalence_class[i]]
                 while (i+1 < len(equivalence_class)) and (equivalence_class[i] == equivalence_class[i+1]):
                     i += 1
                     fr1.append(equivalence_class[i])
@@ -131,9 +130,7 @@ def _modify_input_fragments(file: str) -> list:
             line = json.loads(input_line)
             index1 = []
             for fragment in line["fragments"]:
-                index = []
-                index.append(fragment["index"])
-                index.append(fragment["smiles"])
+                index = [fragment["index"], fragment["smiles"]]
                 index1.append(index)
             indexes.append(index1)
     indexes_without_duplication = []
@@ -153,7 +150,7 @@ def _modify_input_fragments(file: str) -> list:
 def _equivalence_classes(active_data: list, heterogenous_equivalence_class: list) -> list:
     for active_molecule_fragments in active_data:
         for class_equivalence in heterogenous_equivalence_class:
-            foundedAll = True
+            founded_all = True
             indexes = []
             for item in class_equivalence:
                 founded = False
@@ -163,8 +160,8 @@ def _equivalence_classes(active_data: list, heterogenous_equivalence_class: list
                         indexes.append(num)
                         break
                 if founded is False:
-                    foundedAll = False
-            if foundedAll:
+                    founded_all = False
+            if founded_all:
                 i = len(indexes)
                 while i > 0:
                     index = indexes[i - 1]
