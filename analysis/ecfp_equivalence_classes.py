@@ -31,7 +31,7 @@ def _main():
         fragments1 = extract_neighbourhood_fragments(molecule, 6, options,
                                                      int(configuration["first_nbit"]))
         equivalence_class1 = utils.equivalence_class(fragments1)
-        if equivalence_classes == [] :
+        if not equivalence_classes:
             equivalence_classes.extend(equivalence_class1)
         else:
             for new_item in equivalence_class1:
