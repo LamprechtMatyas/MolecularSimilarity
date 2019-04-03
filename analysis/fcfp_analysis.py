@@ -21,6 +21,7 @@ def _main():
         "kekule": False,
         "isomeric": False
     }
+    first = True
     with open(configuration["output_file"], "w", encoding="utf-8") as output_stream:
         for active_molecule in molecules:
             molecule_smiles = active_molecule.strip("\"")
@@ -34,10 +35,27 @@ def _main():
             same_equivalence = utils.same_equivalence_class(equivalence_class1, equivalence_class2)
             difference1 = utils.difference_of_equivalence(equivalence_class1, same_equivalence, 0)
             difference2 = utils.difference_of_equivalence(equivalence_class2, same_equivalence, 1)
+            if first:
+                first = False
+            else:
+                output_stream.write((len(molecule_smiles) + 11) * "-" + "\n")
             output_stream.write("molecule:  " + molecule_smiles + "\n")
-            output_stream.write(str(difference1) + "\n")
-            output_stream.write(str(difference2) + "\n")
-            output_stream.write(50*"-" + "\n")
+            if difference1:
+                all_fragments = utils.all_fragments_in_different_classes(difference1)
+                table = utils.make_table(all_fragments, difference1, difference2)
+                len_of_first_col = max([len(item) for item in all_fragments])
+                output_stream.write("\nfragment" + (len_of_first_col - 3) * " " +
+                                    configuration["first_nbit"] + 5 * " " + configuration[
+                                        "second_nbit"] + "\n")
+                for row in table:
+                    output_stream.write(
+                        str(row[0]) + (len_of_first_col - len(str(row[0])) + 7) * " " +
+                        str(row[1]) + (len(configuration["first_nbit"]) + 5) * " " +
+                        str(row[2]) + "\n")
+
+            else:
+                output_stream.write("Classes are same.")
+            output_stream.write("\n\n")
 
 
 # Extract and return circular fragments.
