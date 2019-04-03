@@ -70,7 +70,8 @@ class EcfpPairModel(IModel):
                     for test_index in test_active_indexes:
                         if test_index in model_configuration["data"]["active"]:
                             summary += 1
-                    sim = summary / len(model_configuration["data"]["active"])
+                    sim = summary / (len(model_configuration["data"]["active"]) +
+                                     len(test_active_indexes) - summary)
                     score = {
                         "name": line["name"],
                         "score": sim
