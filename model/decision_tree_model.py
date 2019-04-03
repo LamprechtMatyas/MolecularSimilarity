@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """"
 Model that uses standard machine learning method - decision trees
 input model_configuration should look like this:
@@ -39,7 +40,7 @@ class DecisionTreeClassifier(IModel):
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         decision_tree = tree.DecisionTreeClassifier()
-        # ger activity list
+        # get activity list
         actives = [1 for i in range(len(model_configuration["data"]["active"]))]
         inactives = [0 for i in range(len(model_configuration["data"]["inactive"]))]
         activity = actives + inactives
@@ -49,7 +50,7 @@ class DecisionTreeClassifier(IModel):
         test_descriptors = _extract_descriptors(descriptors_file)
         prediction = decision_tree.predict(test_descriptors)
         molecule_names = _extract_names(fragments_file)
-        #write output
+        # write output
         first_line = True
         with open(output_file, "w", encoding="utf-8") as output_stream:
             for i in range(len(prediction)):
@@ -64,7 +65,7 @@ class DecisionTreeClassifier(IModel):
                 json.dump(score, output_stream)
 
 
-def _extract_names(input_file: str) -> tuple:
+def _extract_names(input_file: str) -> list:
     names = []
     with open(input_file, "r", encoding="utf-8") as stream:
         for new_line in stream:
