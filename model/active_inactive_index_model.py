@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """"
 Model based on active and inactive indexes.
 For each molecule in test set we compare its indexes with the active indexes
