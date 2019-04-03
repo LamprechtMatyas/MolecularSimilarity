@@ -34,3 +34,10 @@ def _discover_models():
     import model.equivalent_class_model
     import model.baseline_model
     import model.ecfp_pair_model
+    import model.active_pair_model
+    import model.add_paired_model
+    import model.cutoff_model
+    import model.cutoff_active_pair_model
+    import model.cutoff_add_paired_model
+    import model.pair_and_add_model
+    import model.my_nbit_hashed_ap_model
