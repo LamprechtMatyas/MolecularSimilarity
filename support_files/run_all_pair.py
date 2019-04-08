@@ -5,20 +5,45 @@ and evaluation.
 """
 import argparse
 import json
+import threading
+import multiprocessing
+
 import inputoutput_utils
 import model_factory
 import add_activity
 import compute_evaluation
 
 
+class MyThread(threading.Thread):
+    def __init__(self, name: str, active_fragments: str, test_fragments: str, test_activity: str,
+                                  num: int, output_directory: str, ranges: list):
+        threading.Thread.__init__(self)
+        self.name = name
+        self.active_fragments = active_fragments
+        self.test_fragments = test_fragments
+        self.test_activity = test_activity
+        self.num = num
+        self.output_directory = output_directory
+        self.ranges = ranges
+
+    def run(self):
+        print("Starting" + self.name)
+        _model_and_score_and_evaluate(self.active_fragments, self.test_fragments, self.test_activity,
+                                      self.num, self.output_directory, self.ranges)
+        print("Finishing" + self.name)
+
+
 def _main():
+    cpu_counts = multiprocessing.cpu_count()
     configuration = _read_configuration()
-    num = _make_configuration_files(configuration["active_fragments"],
-                                    configuration["output_directory"], configuration["model"])
-    _model(configuration["active_fragments"], configuration["test_fragments"], num,
-           configuration["output_directory"])
-    _score_and_evaluate_model(configuration["test_activity"], num,
-                              configuration["output_directory"])
+    ranges = _make_configuration_files(configuration["active_fragments"],
+                                    configuration["output_directory"], configuration["model"], cpu_counts)
+
+    for i in range(cpu_counts):
+        thread = MyThread("Thread-" + str(i), configuration["active_fragments"],
+                          configuration["test_fragments"], configuration["test_activity"], i,
+                          configuration["output_directory"], ranges)
+        thread.start()
 
 
 def _read_configuration():
@@ -35,7 +60,7 @@ def _read_configuration():
     return configuration
 
 
-def _make_configuration_files(input_file: str, output_directory: str, model_name: str) -> int:
+def _make_configuration_files(input_file: str, output_directory: str, model_name: str, cpu_counts) -> list:
     active_indexes = []
     inputoutput_utils.create_parent_directory(output_directory + "/configurationfiles/0")
     with open(input_file, "r", encoding="utf-8") as input_stream:
@@ -44,49 +69,64 @@ def _make_configuration_files(input_file: str, output_directory: str, model_name
             for item in line["fragments"]:
                 if item["index"] not in active_indexes:
                     active_indexes.append(item["index"])
-    num = 0
+
+    pair_list = []
     for i in range(len(active_indexes)-1):
         for j in range(i+1, len(active_indexes)):
-            pair_list = [active_indexes[i], active_indexes[j]]
-            model = {
-                "model_name": model_name,
-                "pair": pair_list
-            }
-            output_file = output_directory + "/configurationfiles/configuration" + str(num) + ".json"
-            with open(output_file, "w", encoding="utf-8") as output_stream:
+            pair_list.append([active_indexes[i], active_indexes[j]])
+
+    number = len(pair_list) // cpu_counts
+    ranges = []
+    for i in range(cpu_counts):
+        ranges.append(i * number)
+    ranges.append(len(pair_list))
+
+    for i in range(cpu_counts):
+        output_file = output_directory + "/configurationfiles/configuration" + str(i) + ".json"
+        first = True
+        with open(output_file, "w", encoding="utf-8") as output_stream:
+            for j in range(ranges[i], ranges[i+1]):
+                model = {
+                    "model_name": model_name,
+                    "pair": pair_list[j]
+                }
+                if first:
+                    first = False
+                else:
+                    output_stream.write("\n")
                 json.dump(model, output_stream)
-            num += 1
-    return num
+
+    return ranges
 
 
-def _model(active_fragments: str, test_fragments: str, num: int, output_directory: str):
+def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, test_activity: str,
+                                  num: int, output_directory: str, ranges: list):
     inputoutput_utils.create_parent_directory(output_directory + "/scorefiles/0")
-    for i in range(num):
-        with open(output_directory + "/configurationfiles/configuration" + str(i) + ".json", "r",
-                  encoding="utf-8") as input_file:
-            for new_line in input_file:
-                line = json.loads(new_line)
-                new_model = model_factory.create_model(line["model_name"])
-                model = new_model.create_model(active_fragments, "", "", "",
-                                               line)
-                new_model.score_model(model, test_fragments, "", output_directory + "/scorefiles/score" + str(i) + ".json")
-
-
-def _score_and_evaluate_model(test_activity: str, num: int, output_directory: str):
     inputoutput_utils.create_parent_directory(output_directory + "/activities/0")
     inputoutput_utils.create_parent_directory(output_directory + "/evaluations/0")
-    for i in range(num):
-        # run add_activity
-        activity = add_activity.read_activity(test_activity)
-        add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + str(i) + ".json",
-                                                    activity,
-                                                    output_directory + "/activities/activity" + str(i) + ".json")
+    count = ranges[num]
+    with open(output_directory + "/configurationfiles/configuration" + str(num) + ".json", "r",
+              encoding="utf-8") as input_file:
+        for new_line in input_file:
+            line = json.loads(new_line)
+            new_model = model_factory.create_model(line["model_name"])
+            model = new_model.create_model(active_fragments, "", "", "",
+                                           line)
+            new_model.score_model(model, test_fragments, "",
+                                  output_directory + "/scorefiles/score" + str(count) + ".json")
 
-        # run compute_evaluation
-        score_act = compute_evaluation.read_file_with_score_and_activity(output_directory + "/activities/activity"
-                                                                        + str(i) + ".json")
-        activity = compute_evaluation.sort_activity(score_act)
-        compute_evaluation.evaluation(activity, output_directory + "/evaluations/evaluation" + str(i) + ".json")
+            # run add_activity
+            activity = add_activity.read_activity(test_activity)
+            add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + str(count) + ".json",
+                                                        activity,
+                                                        output_directory + "/activities/activity" + str(count) + ".json")
+
+            # run compute_evaluation
+            score_act = compute_evaluation.read_file_with_score_and_activity(output_directory + "/activities/activity"
+                                                                            + str(count) + ".json")
+            activity = compute_evaluation.sort_activity(score_act)
+            compute_evaluation.evaluation(activity, output_directory + "/evaluations/evaluation" + str(count) + ".json")
+            count += 1
 
 
 if __name__ == "__main__":
