@@ -14,25 +14,6 @@ import add_activity
 import compute_evaluation
 
 
-class MyThread(threading.Thread):
-    def __init__(self, name: str, active_fragments: str, test_fragments: str, test_activity: str,
-                                  num: int, output_directory: str, ranges: list):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.active_fragments = active_fragments
-        self.test_fragments = test_fragments
-        self.test_activity = test_activity
-        self.num = num
-        self.output_directory = output_directory
-        self.ranges = ranges
-
-    def run(self):
-        print("Starting" + self.name)
-        _model_and_score_and_evaluate(self.active_fragments, self.test_fragments, self.test_activity,
-                                      self.num, self.output_directory, self.ranges)
-        print("Finishing" + self.name)
-
-
 def _main():
     cpu_counts = multiprocessing.cpu_count()
     configuration = _read_configuration()
@@ -40,10 +21,12 @@ def _main():
                                     configuration["output_directory"], configuration["model"], cpu_counts)
 
     for i in range(cpu_counts):
-        thread = MyThread("Thread-" + str(i), configuration["active_fragments"],
-                          configuration["test_fragments"], configuration["test_activity"], i,
-                          configuration["output_directory"], ranges)
-        thread.start()
+        process = multiprocessing.Process(target=_model_and_score_and_evaluate,
+                                          args=(configuration["active_fragments"],
+                                          configuration["test_fragments"], configuration["test_activity"],
+                                          i, configuration["output_directory"], ranges))
+        process.start()
+
 
 
 def _read_configuration():
