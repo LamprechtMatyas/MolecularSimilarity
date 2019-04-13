@@ -56,7 +56,7 @@ class DecisionTreeClassifier(IModel):
             for i in range(len(prediction)):
                 score = {
                     "name": molecule_names[i],
-                    "score": int(prediction[i])
+                    "score": float(prediction[i])
                 }
                 if first_line:
                     first_line = False
