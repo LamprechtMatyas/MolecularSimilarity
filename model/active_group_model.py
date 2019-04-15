@@ -2,10 +2,10 @@
 """"
 Model that takes groups of equivalence classes, keeps active molecules separated (deletes multiple
 same indexes - keeps only first occurrence) and applies these equivalence classes to each active
-molecule - so e.g. if group is [1,2,3] and the molecule has these three indexes then this group replace each
-index from group, so it deletes [1], [2], [3] and adds [1,2,3]. Then this same is applied on each molecule
-in test set and then each molecule from test set in compared with each molecule from active
-molecules and the maximum similarity for each test molecule is taken.
+molecule - so e.g. if group is [1,2,3] and the molecule has these three indexes then this group replaces
+each index from group, so it deletes [1], [2], [3] and adds [1,2,3]. Then this same is applied on
+each molecule in test set and then each molecule from test set is compared with each molecule from
+active molecules and the maximum similarity for each test molecule is taken.
 input model_configuration could look e.g. like this:
     {"model_name": "active_group_model", "groups": [[num1,  num2, num3], [num4, num5, num6]]}
     {"model_name": "active_group_model", "groups": [[num1,  num2, num3, num4]]}
