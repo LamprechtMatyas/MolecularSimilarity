@@ -36,11 +36,15 @@ class CutOffModel(IModel):
             for new_line in input_stream:
                 num_of_active_mol += 1
                 line = json.loads(new_line)
+                indexes1 = []
                 for item in line["fragments"]:
-                    if item["index"] in indexes:
-                        indexes[item["index"]] += 1
+                    if item["index"] not in indexes1:
+                        indexes1.append(item["index"])
+                for item in indexes1:
+                    if item not in indexes:
+                        indexes[item] = 1
                     else:
-                        indexes[item["index"]] = 1
+                        indexes[item] += 1
         cut = num_of_active_mol * int(model_configuration["cutoff"]) / 100
         cutoff_indexes = []
         for item in indexes:
