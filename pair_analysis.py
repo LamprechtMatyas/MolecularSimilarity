@@ -92,8 +92,26 @@ def _main():
                               "a", encoding="utf-8") as output_stream:
                         json.dump(output, output_stream)
                         output_stream.write("\n")
+    
+    with open(configuration["output_directory"] + "/baseline.json", "w", encoding="utf-8") as output_stream:
+        output = {
+            "AUC": auc,
+            "EF1": ef1,
+            "EF5": ef5
+        }
+        json.dump(output, output_stream)
 
 
+def _read_configuration() -> dict:
+    parser = argparse.ArgumentParser(description="analysis of a lot of results")
+    parser.add_argument("-f", type=str, dest="input_fragments", required=True)
+    parser.add_argument("-b", type=str, dest="baseline_output", required=True)
+    parser.add_argument("-d", type=str, dest="input_directory", required=True)
+    parser.add_argument("-o", type=str, dest="output_directory",
+                        help="output json lines file", required=True)
+    return vars(parser.parse_args())
+    
+    
 def _prepare_files(output_directory: str):
     with open(output_directory + "/aucef1ef5.json",
               "w", encoding="utf-8"):
@@ -118,16 +136,6 @@ def _prepare_files(output_directory: str):
         pass
     with open(output_directory + "/greater.json", "w", encoding="utf-8"):
         pass
-
-
-def _read_configuration() -> dict:
-    parser = argparse.ArgumentParser(description="analysis of a lot of results")
-    parser.add_argument("-f", type=str, dest="input_fragments", required=True)
-    parser.add_argument("-b", type=str, dest="baseline_output", required=True)
-    parser.add_argument("-d", type=str, dest="input_directory", required=True)
-    parser.add_argument("-o", type=str, dest="output_directory",
-                        help="output json lines file", required=True)
-    return vars(parser.parse_args())
 
 
 if __name__  == "__main__":
