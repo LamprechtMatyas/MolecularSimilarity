@@ -17,7 +17,6 @@ import inputoutput_utils
 def _main():
     configuration = _read_configuration()
     baseline_results = _mean_results(configuration["baseline_input"])
-    print(baseline_results)
     inputoutput_utils.create_parent_directory(configuration["output_directory"] + "/0")
     _prepare_files(configuration["output_directory"])
     files = [f for f in listdir(configuration["configuration"]) if
@@ -86,8 +85,47 @@ def _main():
                     json.dump(output, output_stream)
                     output_stream.write("\n")
             num += 1
+    with open(configuration["output_directory"] + "/baseline.json", "w", encoding="utf-8") as output_stream:
+        output = {
+            "AUC": auc,
+            "EF1": ef1,
+            "EF5": ef5
+        }
+        json.dump(output, output_stream)
 
 
+def _read_configuration():
+    parser = argparse.ArgumentParser(description="group analysis "
+                                                 "See file header for more details.")
+    parser.add_argument("-b", type=str, dest="baseline_input",
+                        help="file from pair_analysis or select best results or group analysis", required=True)
+    parser.add_argument("-c", type=str, dest="configuration", help="directory with configuration files from"
+                                                                   " run_all_groups", required=True)
+    parser.add_argument("-e", type=str, dest="evaluations", help="directory to evaluation files,"
+                                                                 " there must be stored only evaluation files",
+                        required=True)
+    parser.add_argument("-o", type=str, dest="output_directory", help="output directory", required=True)
+
+    configuration = vars(parser.parse_args())
+    return configuration
+
+    
+def _mean_results(file: str) -> list:
+    results = [0, 0, 0]
+    num = 0
+    with open(file, "r", encoding="utf-8") as input_stream:
+        for new_line in input_stream:
+            num += 1
+            line = json.loads(new_line)
+            results[0] += float(line["AUC"])
+            results[1] += float(line["EF1"])
+            results[2] += float(line["EF5"])
+    results[0] = results[0] / num
+    results[1] = results[1] / num
+    results[2] = results[2] / num
+    return results  
+    
+      
 def _prepare_files(output_directory: str):
     with open(output_directory + "/aucef1ef5.json",
               "w", encoding="utf-8"):
@@ -112,39 +150,7 @@ def _prepare_files(output_directory: str):
         pass
     with open(output_directory + "/greater.json", "w", encoding="utf-8"):
         pass
-
-
-def _mean_results(file: str) -> list:
-    results = [0, 0, 0]
-    num = 0
-    with open(file, "r", encoding="utf-8") as input_stream:
-        for new_line in input_stream:
-            num += 1
-            line = json.loads(new_line)
-            results[0] += float(line["AUC"])
-            results[1] += float(line["EF1"])
-            results[2] += float(line["EF5"])
-    results[0] = results[0] / num
-    results[1] = results[1] / num
-    results[2] = results[2] / num
-    return results
-
-
-def _read_configuration():
-    parser = argparse.ArgumentParser(description="group analysis "
-                                                 "See file header for more details.")
-    parser.add_argument("-b", type=str, dest="baseline_input",
-                        help="file from pair_analysis or select best results or group analysis", required=True)
-    parser.add_argument("-c", type=str, dest="configuration", help="directory with configuration files from"
-                                                                   " run_all_groups", required=True)
-    parser.add_argument("-e", type=str, dest="evaluations", help="directory to evaluation files,"
-                                                                 " there must be stored only evaluation files",
-                        required=True)
-    parser.add_argument("-o", type=str, dest="output_directory", help="output directory", required=True)
-
-    configuration = vars(parser.parse_args())
-    return configuration
-
+  
 
 if __name__ == "__main__":
     _main()
