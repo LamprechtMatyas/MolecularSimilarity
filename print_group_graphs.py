@@ -217,21 +217,6 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
     plt.savefig(output_directory + "/index_auc_groups.png", dpi=1000)
     plt.figure()
     
-    table_st = []
-    for i in range(15):
-        table_st.append([table_things[i][0], table_things[i][1]])
-    
-    fig = plt.figure(figsize=(ncols*wcell+wpad, nrows*hcell+hpad))
-    ax = fig.add_subplot(111)
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    colLabels=("Index", "AUC")
-    
-    the_table = ax.table(cellText=table_st, colLabels=colLabels, cellLoc="center", loc="center")
-    the_table.auto_set_font_size(False)
-    the_table.set_fontsize(5)
-    plt.savefig(output_directory + "/index_auc.png", dpi=1000)
-    
     index_auc = []
     with open(input_file, "r", encoding="utf-8") as input_stream:
          for new_line in input_stream:
