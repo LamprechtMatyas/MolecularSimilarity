@@ -25,11 +25,11 @@ def _discover_models():
     import model.active_inactive_index_model
     import model.linear_regression_model
     import model.decision_tree_model
-    import model.nbit_ecfp_model
-    import model.nbit_fcfp_model
+    import model.nbit_ecfp_model_vector
+    import model.nbit_fcfp_model_vector
     import model.nbit_ap_model
-    import model.nbit_ecfp_model2
-    import model.nbit_fcfp_model2
+    import model.nbit_ecfp_model_hashed
+    import model.nbit_fcfp_model_hashed
     import model.nbit_tt_model
     import model.equivalent_class_model
     import model.baseline_model
@@ -41,3 +41,10 @@ def _discover_models():
     import model.cutoff_add_paired_model
     import model.pair_and_add_model
     import model.my_nbit_hashed_ap_model
+    import model.baseline_active_pair_model
+    import model.active_group_model
+    import model.add_group_model
+    import model.cutoff_and_group_model
+    import model.cutoff_active_group_model
+    import model.ecfp_group_model
+    import model.group_and_add_model
