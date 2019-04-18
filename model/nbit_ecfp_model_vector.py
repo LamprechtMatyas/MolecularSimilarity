@@ -3,7 +3,7 @@
 Model that uses AllChem.GetMorganFingerprintAsBitVect() function for ecfp fingerprints
 that stores the data into nbits and we can set the store space as an input parameter as nbit.
 Then it uses Tanimoto similarity metrics.
-    {"model_name": "nbit_ecfp_model", "nbits": num}
+    {"model_name": "nbit_ecfp_model_vector", "nbits": num}
     where num in natural number
 """
 
@@ -19,8 +19,8 @@ import inputoutput_utils
 import rdkitmodel_utils
 
 
-class NbitEcfpModel(IModel):
-    model_name = "nbit_ecfp_model"
+class NbitEcfpModelVector(IModel):
+    model_name = "nbit_ecfp_model_vector"
 
     def name(self):
         return self.model_name
@@ -80,5 +80,5 @@ class NbitEcfpModel(IModel):
                     json.dump(score, output_stream)
 
 
-register_model(NbitEcfpModel.model_name, lambda: NbitEcfpModel())
+register_model(NbitEcfpModelVector.model_name, lambda: NbitEcfpModelVector())
 
