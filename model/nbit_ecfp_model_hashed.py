@@ -3,7 +3,7 @@
 Model that uses AllChem.GetHashedMorganFingerprint() function for ecfp fingerprints
 which hashes the data and we can set the store space as an input parameter as nbit.
 Then it uses Tanimoto similarity metrics.
-    {"model_name": "nbit_ecfp_model2", "nbits": num}
+    {"model_name": "nbit_ecfp_model_hashed", "nbits": num}
     where num in natural number
 """
 
@@ -19,8 +19,8 @@ import inputoutput_utils
 import rdkitmodel_utils
 
 
-class NbitEcfpModel2(IModel):
-    model_name = "nbit_ecfp_model2"
+class NbitEcfpModelHashed(IModel):
+    model_name = "nbit_ecfp_model_hashed"
 
     def name(self):
         return self.model_name
@@ -80,5 +80,5 @@ class NbitEcfpModel2(IModel):
                     json.dump(score, output_stream)
 
 
-register_model(NbitEcfpModel2.model_name, lambda: NbitEcfpModel2())
+register_model(NbitEcfpModelHashed.model_name, lambda: NbitEcfpModelHashed())
 
