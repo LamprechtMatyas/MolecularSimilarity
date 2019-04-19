@@ -77,7 +77,7 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
                 groups11 = _one_group_intersection(groups1)
                 new_group = groups11.copy()
                 if groups2 != []:
-                    new_group.append(groups2)
+                    new_group.extend(groups2)
                 group_list.append(new_group)
             else:
                 group_list.append(groups1 + groups2)
