@@ -6,7 +6,8 @@ TanimotoSimilarity from DataStructs library.
 Each molecule from test set is compared with all known active molecules and the highest
 similarity is that assigned to a molecule.
 input model_configuration should look like this:
-    {"model_name": "rdkit_tt_model"}
+    {"model_name": "rdkit_tt_model", "fragments": "tt.num1"}
+    num1 is a natural number
 """
 
 import json
@@ -39,7 +40,7 @@ class RdkitTTModel(IModel):
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         model_data = model_configuration["data"]
-        radius = model_configuration["configuration"]["radius"]
+        radius = int(model_configuration["configuration"]["fragments"][0]["size"]) 
         active_molecules_tt = []
         for active_molecule in model_data["active"]:
             molecule_smiles = active_molecule.strip("\"")
