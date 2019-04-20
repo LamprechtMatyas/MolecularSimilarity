@@ -4,7 +4,7 @@ Model that uses AllChem.GetHashedMorganFingerprint() function for fcfp fingerpri
 which hashes the data and we can set the store space as an input parameter as nbit.
 Then it uses Tanimoto similarity metrics.
     {"model_name": "nbit_fcfp_model_hashed", "fragments": "fcfp.num1", "nbits": num}
-    where num in natural number, num1 is a diameter of ECFP
+    where num in natural number, num1 is a diameter of FCFP
 """
 
 import json
