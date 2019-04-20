@@ -125,7 +125,6 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
     sorted_index_auc = _sort_by_length(index_auc)
     plt.close("all")
     for item in sorted_index_auc:
-        plt.clf()
         plt.boxplot(item[1:])
         plt.xticks([])
         plt.savefig(output_directory + "/" + str(item[0]) + ".png")
