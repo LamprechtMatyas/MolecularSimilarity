@@ -99,21 +99,7 @@ def _fragments_distribution(input_file: str, output_directory: str):
     plt.annotate("Number of groups: " + str(number_of_input), xy=(0.65, 0.95), xycoords='axes fraction')
     plt.tight_layout()
     plt.savefig(output_directory + "/fragments.png")
-    plt.figure()
-    
-
-def _sort(fragments: dict) -> list:
-    fragments_list = [[], []]
-    for item in fragments:
-        fragments_list[0].append(item)
-        fragments_list[1].append(fragments[item])
-    for i in range(len(fragments_list[1]) - 1):
-        for j in range(len(fragments_list[1]) - i - 1):
-            if fragments_list[1][j] < fragments_list[1][j+1]:
-                tmp = fragments_list[1][j]
-                fragments_list[1][j] = fragments_list[1][j+1]
-                fragments_list[1][j+1] = tmp
-    return fragments_list     
+    plt.figure() 
 
 
 def _print_boxplot(input_file: str, output_directory: str, auc: list):
@@ -137,12 +123,14 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
                      else:
                          index_auc[number].append(line["AUC"])
     sorted_index_auc = _sort_by_length(index_auc)
-    
+    plt.close("all")
     for item in sorted_index_auc:
-        plt.figure()
+        plt.clf()
         plt.boxplot(item[1:])
         plt.xticks([])
         plt.savefig(output_directory + "/" + str(item[0]) + ".png")
+        plt.figure()
+        plt.close("all")
     table_things = []
     for i in range(15):
         table_things.append([sorted_index_auc[i][0], len(sorted_index_auc[i][1:]),
@@ -198,8 +186,7 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
     the_table.set_fontsize(5)
     plt.savefig(output_directory + "/index_groups.png", dpi=1000)
     plt.figure()
-    
-    
+     
     so_index_auc = _sort_by_max_auc(sorted_index_auc)
     table_things = []
     for i in range(15):
@@ -241,7 +228,9 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
     the_table.auto_set_font_size(False)
     the_table.set_fontsize(5)
     plt.savefig(output_directory + "/index_auc.png", dpi=1000)
-    
+    plt.figure()
+    plt.close()
+
 
 def _sort_by_auc(auc: list) -> list:
     for i in range(len(auc) - 1):
