@@ -31,11 +31,7 @@ class NbitTTModel(IModel):
                      model_configuration: dict) -> dict:
         active_smiles = rdkitmodel_utils.select_molecules(active_fragments)
         model = {
-            "configuration": {
-                "model_name": model_configuration["model_name"],
-                "nbits": model_configuration["nbits"],
-                "radius": rdkitmodel_utils.find_radius(active_fragments)
-            },
+            "configuration": model_configuration,
             "data": {
                 "active": active_smiles
             }
@@ -49,7 +45,6 @@ class NbitTTModel(IModel):
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         model_data = model_configuration["data"]
-        radius = model_configuration["configuration"]["radius"]
         active_molecules_tt = []
         nbits = model_configuration["configuration"]["nbits"]
         for active_molecule in model_data["active"]:
