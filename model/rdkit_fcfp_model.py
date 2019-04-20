@@ -5,7 +5,8 @@ FCFP and computing similarity by using TanimotoSimilarity from DataStructs libra
 Each molecule from test set is compared with all known active molecules and the highest
 similarity is that assigned to a molecule.
 input model_configuration should look like this:
-    {"model_name": "rdkit_fcfp_model"}
+    {"model_name": "rdkit_fcfp_model", "fragments": "fcfp.num1"}
+    num1 is a diameter of FCFP
 """
 
 import json
@@ -38,7 +39,11 @@ class RdkitFcfpModel(IModel):
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         model_data = model_configuration["data"]
-        radius = model_configuration["configuration"]["radius"]
+        diameter = int(model_configuration["configuration"]["fragments"][0]["size"]) 
+        if int(diameter) % 2 == 1:
+            print("Incorrect input, size must be even!")
+            exit(1)
+        radius = diameter // 2
         active_molecules_fcfp = []
         for active_molecule in model_data["active"]:
             molecule_smiles = active_molecule.strip("\"")
