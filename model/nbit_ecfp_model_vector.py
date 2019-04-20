@@ -3,8 +3,8 @@
 Model that uses AllChem.GetMorganFingerprintAsBitVect() function for ecfp fingerprints
 that stores the data into nbits and we can set the store space as an input parameter as nbit.
 Then it uses Tanimoto similarity metrics.
-    {"model_name": "nbit_ecfp_model_vector", "nbits": num}
-    where num in natural number
+    {"model_name": "nbit_ecfp_model_vector", "fragments": "ecfp.num1", "nbits": num}
+    where num in natural number, num1 is a diameter of ECFP
 """
 
 import json
@@ -30,11 +30,7 @@ class NbitEcfpModelVector(IModel):
                      model_configuration: dict) -> dict:
         active_smiles = rdkitmodel_utils.select_molecules(active_fragments)
         model = {
-            "configuration": {
-                "model_name": model_configuration["model_name"],
-                "nbits": model_configuration["nbits"],
-                "radius": rdkitmodel_utils.find_radius(active_fragments)
-            },
+            "configuration": model_configuration,
             "data": {
                 "active": active_smiles
             }
@@ -48,7 +44,11 @@ class NbitEcfpModelVector(IModel):
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         model_data = model_configuration["data"]
-        radius = model_configuration["configuration"]["radius"]
+        diameter = int(model_configuration["configuration"]["fragments"][0]["size"])
+        radius = diameter // 2
+        if int(diameter) % 2 == 1:
+            print("Incorrect input, size must be even!")
+            exit(1)
         active_molecules_ecfp = []
         nbits = model_configuration["configuration"]["nbits"]
         for active_molecule in model_data["active"]:
