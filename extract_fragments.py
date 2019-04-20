@@ -21,7 +21,7 @@ where {SIZE} should be replaced by required fragment size. {SIZE} for ecfp and f
 Usage example:
     tt.3,ecfp.2
 default value:
-    tt.3
+    ecfp.6
 Kekule smiles form has no aromatic bonds. Use of --kekule option thus may
 reduce the number of generated unique fragments.
 This file can be also imported as a python script. In such case please
@@ -82,7 +82,7 @@ def _read_configuration() -> dict:
     configuration = vars(parser.parse_args())
 
     if configuration["fragments"] is None:
-        configuration["fragments"] = "tt.3"
+        configuration["fragments"] = "ecfp.6"
     parsed_types = []
     for item in configuration["fragments"].split(","):
         item_split = item.split(".")
@@ -122,7 +122,7 @@ def _read_configuration() -> dict:
 # The extraction_options["fragments"] must be a list with objects describing
 # fragments to extract, see _read_configuration for more details.
 def extract_fragments(input_files: list, input_type: str, output_files: list,
-                      extraction_options: dict) -> dict:
+                      extraction_options: dict):
     # The write_molecule_json need some static info.
 
     # Count some statistics.
@@ -135,7 +135,7 @@ def extract_fragments(input_files: list, input_type: str, output_files: list,
         with open(output_files[file_num], "w", encoding="utf-8") as output_stream:
             for molecule in _LOAD_FUNCTIONS[input_type](path):
                 item = {
-                    "name": molecule.GetProp("_Name").split("\t")[1],
+                    "name": molecule.GetProp("_Name"),
                     "smiles": rdkit.Chem.MolToSmiles(molecule),
                     "fragments": _extract_fragments_from_molecule(
                         molecule, extraction_options["fragments"],
@@ -163,12 +163,13 @@ def _load_smi(path: str) -> iter:
     with open(path, "r", encoding="utf-8") as stream:
         for line in stream:
             line = line.strip()
-            molecule = rdkit.Chem.MolFromSmiles(line)
+            line_parts = line.split("\t")
+            molecule = rdkit.Chem.MolFromSmiles(line_parts[0])
             if molecule is None:
                 logging.error("Invalid molecule detected.")
                 continue
             # Molecules created from SMILES does not have any name
-            molecule.SetProp("_Name", line)
+            molecule.SetProp("_Name", line_parts[1])
             yield molecule
 
 
@@ -401,7 +402,5 @@ def _append_object_to_jsonlines(output_stream: TextIO, item: dict, holder: Dict[
 
 if __name__ == "__main__":
     _main()
-
-
 
 
