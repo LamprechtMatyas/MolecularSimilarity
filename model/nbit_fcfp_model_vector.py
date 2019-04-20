@@ -4,7 +4,7 @@ Model that uses AllChem.GetMorganFingerprintAsBitVect() function for fcfp finger
 that stores the data into nbits and we can set the store space as an input parameter as nbit.
 Then it uses Tanimoto similarity metrics.
     {"model_name": "nbit_fcfp_model_vector", "fragments": "fcfp.num1", "nbits": num}
-    where num in natural number, num1 is a diameter of ECFP
+    where num in natural number, num1 is a diameter of FCFP
 """
 
 import json
