@@ -29,6 +29,9 @@ class CutoffAddGroupModel(IModel):
     def create_model(self, active_fragments: str, inactive_fragments: str,
                      active_descriptors: str, inactive_descriptors: str,
                      model_configuration: dict) -> dict:
+        if "cutoff" not in model_configuration:
+            print("We need cutoff value")
+            exit(1)
         cutoff = int(model_configuration["cutoff"])
         if (cutoff < 0) or (cutoff > 100):
             print("Wrong input. Cutoff has to be between 0 and 100!!")
