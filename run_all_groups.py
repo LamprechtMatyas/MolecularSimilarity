@@ -17,7 +17,8 @@ def _main():
     cpu_counts = multiprocessing.cpu_count()
     configuration = _read_configuration()
     ranges = _make_configuration_files(configuration["groups"],
-                                    configuration["output_directory"], configuration["model"], cpu_counts)
+                                       configuration["output_directory"], configuration["model"],
+                                       cpu_counts, configuration["cutoff"])
 
     for i in range(cpu_counts):
         process = multiprocessing.Process(target=_model_and_score_and_evaluate,
@@ -36,13 +37,22 @@ def _read_configuration():
     parser.add_argument("-t", type=str, dest="test_fragments", required=True)
     parser.add_argument("-a", type=str, dest="test_activity", required=True)
     parser.add_argument("-m", type=str, dest="model", required=True)
+    parser.add_argument("-c", type=str, dest="cutoff", required=False)
     parser.add_argument("-o", type=str, dest="output_directory", required=True)
 
     configuration = vars(parser.parse_args())
+    if configuration["cutoff"] is not None:
+        configuration["cutoff"] = int(configuration["cutoff"])
+        if (configuration["cutoff"] < 0) or (configuration["cutoff"] > 100):
+            print("cutoff has to have value between 0 and 100!!")
+            exit(1)
+    else:
+         configuration["cutoff"] = -1  
     return configuration
 
 
-def _make_configuration_files(group_file: str, output_directory: str, model_name: str, cpu_counts) -> list:
+def _make_configuration_files(group_file: str, output_directory: str, model_name: str,
+                              cpu_counts: int, cutoff_val: int) -> list:
     groups = []
     inputoutput_utils.create_parent_directory(output_directory + "/configurationfiles/0")
     with open(group_file, "r", encoding="utf-8") as input_stream:
@@ -93,10 +103,17 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
         first = True
         with open(output_file, "w", encoding="utf-8") as output_stream:
             for j in range(ranges[i], ranges[i+1]):
-                model = {
-                    "model_name": model_name,
-                    "groups": group_list[j]
-                }
+                if cutoff_val == -1:
+                    model = {
+                        "model_name": model_name,
+                        "groups": group_list[j]
+                    }
+                else:
+                    model = {
+                        "model_name": model_name,
+                        "cutoff": cutoff_val,
+                        "groups": group_list[j]
+                    }
                 if first:
                     first = False
                 else:
