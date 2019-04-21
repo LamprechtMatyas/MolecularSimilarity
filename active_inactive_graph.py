@@ -37,18 +37,19 @@ def _print_graph(activity_file: str, output_file:str):
     actives = 0
     inactives = 0
     with open(activity_file, "r", encoding="utf-8") as input_stream:
-        for new_line in input_stream:
-            line = json.loads(new_line)
-            if int(line["activity"]) == 1:
+        new_line = input_stream.read()
+        line = json.loads(new_line)
+        for i in line["activity"]:
+            if i == 1:
                 actives += 1
             else:
                 inactives += 1
-    act = ["actives", "inactives"]
+    act = ["aktivní", "neaktivní"]
     slices = [actives, inactives]
     colors = ["r", "b"]
     plt.pie(slices, labels=act, colors=colors)
-    plt.legend()
-    plt.title("number of actives vs inactives")
+    # plt.legend()
+    plt.title("Poměr aktivních a neaktivních molekul")
     plt.savefig(output_file)
 
 
