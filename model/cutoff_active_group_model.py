@@ -5,7 +5,7 @@ or more molecules than is cutoff these ones rest. Then we make groups from them
 as in active_group_model.py and we evaluate the test molecules in a same way as
 in active_group_model.py.
 input model_configuration could look like this:
-    {"model_name": "cutoff_active_group_model", "cutoff":num, "groups": [[num1,  num2], [num3, num4]]}
+    {"model_name": "cutoff_active_pair_model", "cutoff":num, "groups": [[num1,  num2], [num3, num4]]}
     num has to be number between 0 and 100, because it is percent
 """
 
@@ -29,6 +29,9 @@ class CutoffActiveGroupModel(IModel):
                      model_configuration: dict) -> dict:
         indexes = {}
         num_of_active_mol = 0
+        if "cutoff" not in model_configuration:
+            print("We need cutoff value")
+            exit(1)
         cutoff = int(model_configuration["cutoff"])
         if (cutoff < 0) or (cutoff > 100):
             print("Wrong input. Cutoff has to be between 0 and 100!!")
