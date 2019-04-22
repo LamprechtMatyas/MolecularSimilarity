@@ -10,11 +10,8 @@ Usage:
         -c (optional input file with activity of test molecules)
         -m (input configuration json file)
         -o (output file)
-        -f (optional, comma seperated list of fragments)
         -p (optional, type of input molecules files, default sdf)
         -d (optional directory where to store intermediate results)
-        --kekule {generated kekule form of SMILES for fragments}
-        --isomeric {put stereochemistry information into fragments SMILES}
 Fragments type:
     - tt.{SIZE}
     - ecfp.{SIZE}
