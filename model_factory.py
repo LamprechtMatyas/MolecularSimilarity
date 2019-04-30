@@ -48,3 +48,4 @@ def _discover_models():
     import model.cutoff_active_group_model
     import model.ecfp_group_model
     import model.group_and_add_model
+    import model.delete_index_group_model
