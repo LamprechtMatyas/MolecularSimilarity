@@ -6,6 +6,7 @@ and evaluation.
 import argparse
 import json
 import multiprocessing
+import os
 
 import inputoutput_utils
 import model_factory
@@ -16,6 +17,12 @@ import compute_evaluation
 def _main():
     cpu_counts = multiprocessing.cpu_count()
     configuration = _read_configuration()
+    configuration = _read_configuration()
+    if int(configuration["num_cores"]) > cpu_counts:
+        print("You have only " + str(cpu_counts) + " cores")
+        exit(1)
+    else:
+        cpu_counts = int(configuration["num_cores"])   
     ranges = _make_configuration_files(configuration["groups"],
                                        configuration["output_directory"], configuration["model"],
                                        cpu_counts, configuration["cutoff"])
@@ -37,6 +44,7 @@ def _read_configuration():
     parser.add_argument("-t", type=str, dest="test_fragments", required=True)
     parser.add_argument("-a", type=str, dest="test_activity", required=True)
     parser.add_argument("-m", type=str, dest="model", required=True)
+    parser.add_argument("-n", type=str, dest="num_cores", required=True)
     parser.add_argument("-c", type=str, dest="cutoff", required=False)
     parser.add_argument("-o", type=str, dest="output_directory", required=True)
 
@@ -193,6 +201,9 @@ def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, te
     with open(output_directory + "/configurationfiles/configuration" + str(num) + ".json", "r",
               encoding="utf-8") as input_file:
         for new_line in input_file:
+            if os.path.isfile(output_directory + "/evaluations/evaluation" + str(count) + ".json"):
+                count += 1
+                continue
             line = json.loads(new_line)
             new_model = model_factory.create_model(line["model_name"])
             model = new_model.create_model(active_fragments, "", "", "",
