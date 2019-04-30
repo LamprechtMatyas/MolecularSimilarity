@@ -38,15 +38,22 @@ def _main():
 def _read_configuration():
     parser = argparse.ArgumentParser(description="model evaluation "
                                                  "See file header for more details.")
-    parser.add_argument("-i", type=str, dest="active_fragments", required=True)
+    parser.add_argument("-i", type=str, dest="active_fragments",
+                        help="file with fragments from active molecules", required=True)
     parser.add_argument("-g", type=str, dest="groups",
-                        help="file with fragments", required=True)
-    parser.add_argument("-t", type=str, dest="test_fragments", required=True)
-    parser.add_argument("-a", type=str, dest="test_activity", required=True)
-    parser.add_argument("-m", type=str, dest="model", required=True)
-    parser.add_argument("-n", type=str, dest="num_cores", required=True)
-    parser.add_argument("-c", type=str, dest="cutoff", required=False)
-    parser.add_argument("-o", type=str, dest="output_directory", required=True)
+                        help="file with fragments that we want to group", required=True)
+    parser.add_argument("-t", type=str, dest="test_fragments",
+                        help="file with fragments from test molecules", required=True)
+    parser.add_argument("-a", type=str, dest="test_activity", 
+                        help="activity of test molecules", required=True)
+    parser.add_argument("-m", type=str, dest="model",
+                        help="name of a model", required=True)
+    parser.add_argument("-n", type=str, dest="num_cores",
+                        help="number of cores that you want to use for program running", required=True)
+    parser.add_argument("-c", type=str, dest="cutoff",
+                        help="cutoff option", required=False)
+    parser.add_argument("-o", type=str, dest="output_directory",
+                        help="directory where to store results", required=True)
 
     configuration = vars(parser.parse_args())
     if configuration["cutoff"] is not None:
