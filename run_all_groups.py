@@ -36,7 +36,7 @@ def _main():
 
 
 def _read_configuration():
-    parser = argparse.ArgumentParser(description="model evaluation "
+    parser = argparse.ArgumentParser(description="making groups from groups"
                                                  "See file header for more details.")
     parser.add_argument("-i", type=str, dest="active_fragments",
                         help="file with fragments from active molecules", required=True)
