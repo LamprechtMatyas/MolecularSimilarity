@@ -104,11 +104,14 @@ def _main():
 
 def _read_configuration() -> dict:
     parser = argparse.ArgumentParser(description="analysis of a lot of results")
-    parser.add_argument("-f", type=str, dest="input_fragments", required=True)
-    parser.add_argument("-b", type=str, dest="baseline_output", required=True)
-    parser.add_argument("-d", type=str, dest="input_directory", required=True)
+    parser.add_argument("-f", type=str, dest="input_fragments",
+                        help="file with fragments from active molecules", required=True)
+    parser.add_argument("-b", type=str, dest="baseline_output",
+                        help="file with baseline value", required=True)
+    parser.add_argument("-d", type=str, dest="input_directory",
+                        help="directory to all evaluation files", required=True)
     parser.add_argument("-o", type=str, dest="output_directory",
-                        help="output json lines file", required=True)
+                        help="output directory where to store output files", required=True)
     return vars(parser.parse_args())
     
     
