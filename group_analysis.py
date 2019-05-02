@@ -35,6 +35,9 @@ def _main():
     ef1 = baseline_results[1]
     ef5 = baseline_results[2]
     for file in evaluation_files:
+        num1 = file.split(".")
+        num2 = num1[0][10:]
+        num = int(num2)
         with open(configuration["evaluations"] + "/" + file, "r", encoding="utf-8") as input_stream:
             new_line = input_stream.read()
             line = json.loads(new_line)
