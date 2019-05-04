@@ -5,7 +5,7 @@ or more molecules than is cutoff these ones rest. Then we make groups from them
 as in active_group_model.py and we evaluate the test molecules in a same way as
 in active_group_model.py.
 input model_configuration could look like this:
-    {"model_name": "cutoff_active_pair_model", "cutoff":num, "groups": [[num1,  num2], [num3, num4]]}
+    {"model_name": "cutoff_active_pair_model", "fragments": "ecfp.6", "cutoff":num, "groups": [[num1,  num2], [num3, num4]]}
     num has to be number between 0 and 100, because it is percent
 """
 
