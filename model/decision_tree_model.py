@@ -2,7 +2,7 @@
 """"
 Model that uses standard machine learning method - decision trees
 input model_configuration should look like this:
-    {"model_name": "decision_tree_model"}
+    {"model_name": "decision_tree_model", "fragments": "ecfp.6"}
 """
 import json
 
