@@ -4,7 +4,7 @@ Model that takes all indexes together from all active molecules. Indexes that ap
 or more molecules than is cutoff this one rest. Then we pair them as in active_pair_model.py
 and we evaluate the test molecules in a same way as in active_pair_model.py
 input model_configuration should look like this:
-    {"model_name": "cutoff_active_pair_model", "cutoff":num, "pair": [num1,  num2]}
+    {"model_name": "cutoff_active_pair_model", "fragments": "ecfp.6", "cutoff": num, "pair": [num1,  num2]}
     num has to be number between 0 and 100, because it is percent
 """
 
@@ -57,7 +57,7 @@ class CutoffActivePairModel(IModel):
                 "pair": model_configuration["pair"]
             },
             "data": {
-                "active": [cutoff_indexes]
+                "active": cutoff_indexes
             }
         }
         return model
@@ -67,8 +67,44 @@ class CutoffActivePairModel(IModel):
 
     def score_model(self, model_configuration: list, fragments_file: str,
                     descriptors_file: str, output_file: str):
-        model = pair_model.ActivePairModel()
-        model.score_model(model_configuration, fragments_file, descriptors_file, output_file)
+        inputoutput_utils.create_parent_directory(output_file)
+        first_line = True
+        with open(output_file, "w", encoding="utf-8") as output_stream:
+            with open(fragments_file, "r", encoding="utf-8") as input_stream:
+                for new_line in input_stream:
+                    line = json.loads(new_line)
+                    test_active_indexes = []
+                    for fragment in line["fragments"]:
+                        if fragment["index"] not in test_active_indexes:
+                            test_active_indexes.append(fragment["index"])
+                    if (int(model_configuration["configuration"]["pair"][
+                                0]) in test_active_indexes) and (
+                            int(model_configuration["configuration"]["pair"][
+                                    1]) in test_active_indexes):
+                        test_active_indexes.remove(
+                            int(model_configuration["configuration"]["pair"][0]))
+                        test_active_indexes.remove(
+                            int(model_configuration["configuration"]["pair"][1]))
+                        test_active_indexes.append(model_configuration["configuration"]["pair"])
+                    max_sim = _compute_sim(model_configuration["data"]["active"], test_active_indexes)
+                    score = {
+                        "name": line["name"],
+                        "score": max_sim
+                    }
+                    if first_line:
+                        first_line = False
+                    else:
+                        output_stream.write("\n")
+                    json.dump(score, output_stream)
+
+
+def _compute_sim(active_fragments: list, test_fragments: list) -> list:
+    summary = 0
+    for item in test_fragments:
+        if item in active_fragments:
+            summary += 1
+    sim = summary / (len(active_fragments) + len(test_fragments) - summary)
+    return sim
 
 
 register_model(CutoffActivePairModel.model_name, lambda: CutoffActivePairModel())
