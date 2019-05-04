@@ -4,8 +4,8 @@ Model that does that if there are not all members of one group in molecule then 
 other members from that group. This is done to actives molecules, that are separated and
 then to test molecules.
 input model_configuration could look like this:
-    {"model_name": "add_group_model", "groups": [[num1,  num2, num3], [num4, num5, num6]]}
-    {"model_name": "add_group_model", "groups": [[num1,  num2, num3, num4]]}
+    {"model_name": "add_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2, num3], [num4, num5, num6]]}
+    {"model_name": "add_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2, num3, num4]]}
 """
 
 import json
