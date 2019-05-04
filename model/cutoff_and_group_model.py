@@ -7,7 +7,7 @@ Then is done cutoff, which means that model only takes indexes that has got
 more percentage threshold than is inputted cutoff. Then this group thing is also applied on test
 molecules and then the similarity is computed.
 input model_configuration could look like this:
-    {"model_name": "cutoff_add_paired_model", "fragments": "ecfp.6", "cutoff": num, "groups": [[num1,  num2, num3]]}
+    {"model_name": "cutoff_add_group_model", "fragments": "ecfp.6", "cutoff": num, "groups": [[num1,  num2, num3]]}
     num is between 0 and 100 and it simulates percentage
 """
 
