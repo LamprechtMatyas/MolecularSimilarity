@@ -4,7 +4,7 @@ Model that obtains equivalence classes in input configuration. Then for each act
 it changes their equivalent classes according to input configuration and then it computes
 Tanimoto similarity and takes the biggest one.
 input model_configuration should look like this:
-    {"model_name": "equivalent_class_model", "fragments": "ecfp.6", "equivalence": [[class1], [class2], [class3], ...]}
+    {"model_name": "equivalent_model", "fragments": "ecfp.6", "equivalence": [[class1], [class2], [class3], ...]}
     classes can look e.g. like this:
         ["C[NH+]", "C[NH+]"]
         ["c(c)(c)F", "c1cc(N)cc(O)c1"]
