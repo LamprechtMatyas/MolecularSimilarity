@@ -4,7 +4,7 @@ Model based on active indexes.
 For each molecule in test set we compare its indexes with the active indexes and we compute a sum.
 If we find index in set of active indexes then we add +num1 to the sum else we add -num2 to the sum.
 input model_configuration should look like this:
-    {"model_name": "active_index_model", "active_parameter": num1,"inactive_parameter": num2}
+    {"model_name": "active_index_model", "fragments": "ecfp.6", "active_parameter": num1, "inactive_parameter": num2}
     where num1 and num2 are numbers
 """
 import json
@@ -73,6 +73,5 @@ class PositiveIndexModel(IModel):
 
 
 register_model(PositiveIndexModel.model_name, lambda: PositiveIndexModel())
-
 
 
