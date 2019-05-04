@@ -3,7 +3,7 @@
 Model that makes from two indexes one equivalence class, these indexes are given as parameter
 in the input file.
 input model_configuration should look like this:
-    {"model_name": "ecfp_pair_model", "pair": [num1,  num2]}
+    {"model_name": "ecfp_pair_model", "fragments": "ecfp.6", "pair": [num1,  num2]}
 """
 
 import json
