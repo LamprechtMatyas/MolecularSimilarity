@@ -3,7 +3,7 @@
 Control model that controls that we compute correctly ecfp, fcfp, ap, tt.
 We use indexes of active molecules and we simulate Tanimoto computation.
 input model_configuration should look like this:
-    {"model_name": "control_model"}
+    {"model_name": "control_model", "fragments": "ecfp.6"}
 """
 import json
 
