@@ -7,8 +7,8 @@ each index from group, so it deletes [1], [2], [3] and adds [1,2,3]. Then this s
 each molecule in test set and then each molecule from test set is compared with each molecule from
 active molecules and the maximum similarity for each test molecule is taken.
 input model_configuration could look e.g. like this:
-    {"model_name": "active_group_model", "groups": [[num1,  num2, num3], [num4, num5, num6]]}
-    {"model_name": "active_group_model", "groups": [[num1,  num2, num3, num4]]}
+    {"model_name": "active_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2, num3], [num4, num5, num6]]}
+    {"model_name": "active_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2, num3, num4]]}
 """
 
 import json
