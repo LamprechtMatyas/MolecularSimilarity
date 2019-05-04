@@ -3,7 +3,7 @@
 Model that computes ap fingerprints by using hash function and we can set the size of memory space
 that will be used as input parameter in nbits.
 Then it uses Tanimoto similarity metrics.
-    {"model_name": "nbit_ap_model", "nbits": num}
+    {"model_name": "nbit_ap_model", "fragments": "ap", "nbits": num}
     where num in natural number
 """
 
