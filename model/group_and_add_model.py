@@ -7,7 +7,7 @@ then we add to the similarity sum +(length of the group). This means that the ma
 can be more than 1, so we have to divide similarity by number of indexes in groups,
 because we want similarity between 0 and 1.
 input model_configuration could look like this:
-    {"model_name": "group_and_add_model", "groups": [[num1,num2], [num3, num4, num5]]}
+    {"model_name": "group_and_add_model", "fragments": "ecfp.6", "groups": [[num1,num2], [num3, num4, num5]]}
 """
 import json
 
