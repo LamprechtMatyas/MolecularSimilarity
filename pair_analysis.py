@@ -41,9 +41,11 @@ def _main():
     _prepare_files(configuration["output_directory"])
     onlyfiles = [f for f in listdir(configuration["input_directory"]) if
                  isfile(join(configuration["input_directory"], f))]
-    for num, file in enumerate(onlyfiles):
+    for file in onlyfiles:
         with open(configuration["input_directory"] + "/" + file,
                   "r", encoding="utf-8") as input_stream:
+            file_str = file.split(".")[0]
+            num = int(file_str[10:])
             for new_line in input_stream:
                 line = json.loads(new_line)
                 output = {
