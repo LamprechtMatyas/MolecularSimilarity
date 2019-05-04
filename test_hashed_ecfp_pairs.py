@@ -34,7 +34,7 @@ def make_all_things(configuration: dict):
         for new_line in input_stream:
             line = new_line.strip()
             molecule = rdkit.Chem.MolFromSmiles(line)
-            indexes = _extract_neighbourhood_fragments(molecule, 6, int(configuration["nbits"]))
+            indexes = _extract_neighbourhood_fragments(molecule, 4, int(configuration["nbits"]))
             sorted_indexes = _sort_2d_list(indexes)
             groups = (_make_groups(sorted_indexes))
             couples.extend(_make_couples(groups[0]))
@@ -42,7 +42,7 @@ def make_all_things(configuration: dict):
     with open(configuration["input_pairs"], "r", encoding="utf-8") as input_stream:
         for new_line in input_stream:
             line = json.loads(new_line)
-            pair = line["pair"]
+            pair = line["groups"]
             if pair in couples:
                 num += 1
     print(configuration["nbits"])
