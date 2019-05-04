@@ -9,7 +9,7 @@ Usage:
         -o {comma separated path to 3 output files, first with fragments from active molecules, second with fragments
             from inactive molecules, third with molecules from test molecules}
         -f {optional, comma separated list of fragment types to extract}
-        -p {type of input files, "sdf", "smi". Default is "sdf"}
+        -p {type of input files, "sdf", "smi". Default is "smi"}
         --kekule {generated kekule form of SMILES for fragments}
         --isomeric {put stereochemistry information into fragments SMILES}
 Fragments type:
@@ -73,7 +73,7 @@ def _read_configuration() -> dict:
     parser.add_argument("-f", type=str, dest="fragments",
                         help="fragment type - ecfp, fcfp, ap, tt", required=False)
     parser.add_argument("-p", type=str, dest="input_type",
-                        help="type of input file smi/sdf, default sdf", default="sdf")
+                        help="type of input file smi/sdf, default smi", default="smi")
     parser.add_argument("--kekule", dest="kekule", help="kekule option",
                         action="store_true", required=False)
     parser.add_argument("--isomeric", dest="isomeric", help="isomeric option",
