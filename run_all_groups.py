@@ -23,15 +23,16 @@ def _main():
         exit(1)
     else:
         cpu_counts = int(configuration["num_cores"])   
-    ranges = _make_configuration_files(configuration["groups"],
+    ranges, num_of_groups = _make_configuration_files(configuration["groups"],
                                        configuration["output_directory"], configuration["model"],
                                        cpu_counts, configuration["cutoff"])
 
+    num_groups = _make_list(num_of_groups)
     for i in range(cpu_counts):
         process = multiprocessing.Process(target=_model_and_score_and_evaluate,
                                           args=(configuration["active_fragments"],
                                           configuration["test_fragments"], configuration["test_activity"],
-                                          i, configuration["output_directory"], ranges))
+                                          i, configuration["output_directory"], ranges, num_groups))
         process.start()
 
 
@@ -67,7 +68,7 @@ def _read_configuration():
 
 
 def _make_configuration_files(group_file: str, output_directory: str, model_name: str,
-                              cpu_counts: int, cutoff_val: int) -> list:
+                              cpu_counts: int, cutoff_val: int) -> tuple:
     groups = []
     inputoutput_utils.create_parent_directory(output_directory + "/configurationfiles/0")
     with open(group_file, "r", encoding="utf-8") as input_stream:
@@ -75,6 +76,7 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
             line = json.loads(new_line)
             groups.append(line["groups"])
 
+    num_of_groups = len(groups)
     group_list = []
     for i in range(len(groups)-1):
         for j in range(i+1, len(groups)):
@@ -135,7 +137,7 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
                     output_stream.write("\n")
                 json.dump(model, output_stream)
 
-    return ranges
+    return ranges, num_of_groups
 
 
 def _control_intersection(groups1: list, groups2: list) -> bool:
@@ -199,16 +201,26 @@ def _one_group_intersection(groups: list) -> list:
     return groups
 
 
+def _make_list(num_groups) -> list:
+    groups = []
+    for i in range(num_groups-1):
+        for j in range(i+1, num_groups):
+            groups.append([i, j])
+    return groups
+    
+
 def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, test_activity: str,
-                                  num: int, output_directory: str, ranges: list):
+                                  num: int, output_directory: str, ranges: list, num_groups: list):
     inputoutput_utils.create_parent_directory(output_directory + "/scorefiles/0")
     inputoutput_utils.create_parent_directory(output_directory + "/activities/0")
     inputoutput_utils.create_parent_directory(output_directory + "/evaluations/0")
     count = ranges[num]
     with open(output_directory + "/configurationfiles/configuration" + str(num) + ".json", "r",
               encoding="utf-8") as input_file:
-        for new_line in input_file:
-            if os.path.isfile(output_directory + "/evaluations/evaluation" + str(count) + ".json"):
+        for new_line in input_file: 
+            first_num = num_groups[count][0]
+            second_num = num_groups[count][1] 
+            if os.path.isfile(output_directory + "/evaluations/evaluation" + str(first_num) + "_" + str(second_num) + ".json"):
                 count += 1
                 continue
             line = json.loads(new_line)
@@ -216,19 +228,19 @@ def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, te
             model = new_model.create_model(active_fragments, "", "", "",
                                            line)
             new_model.score_model(model, test_fragments, "",
-                                  output_directory + "/scorefiles/score" + str(count) + ".json")
+                                  output_directory + "/scorefiles/score" + str(first_num) + "_" + str(second_num) + ".json")
 
             # run add_activity
             activity = add_activity.read_activity(test_activity)
-            add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + str(count) + ".json",
+            add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + str(first_num) + "_" + str(second_num) + ".json",
                                                         activity,
-                                                        output_directory + "/activities/activity" + str(count) + ".json")
+                                                        output_directory + "/activities/activity" + str(first_num) + "_" + str(second_num) + ".json")
 
             # run compute_evaluation
             score_act = compute_evaluation.read_file_with_score_and_activity(output_directory + "/activities/activity"
-                                                                            + str(count) + ".json")
+                                                                            + str(first_num) + "_" + str(second_num) + ".json")
             activity = compute_evaluation.sort_activity(score_act)
-            compute_evaluation.evaluation(activity, output_directory + "/evaluations/evaluation" + str(count) + ".json")
+            compute_evaluation.evaluation(activity, output_directory + "/evaluations/evaluation" + str(first_num) + "_" + str(second_num) + ".json")
             count += 1
 
 
