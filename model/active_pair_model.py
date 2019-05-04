@@ -7,7 +7,7 @@ index from pair, so it deletes [1], [2] and adds [1,2]. Then this same is applie
 in test set and then each molecule from test set in compared with each molecule from active
 molecules and the maximum similarity for each test molecule is taken.
 input model_configuration should look like this:
-    {"model_name": "active_pair_model", "pair": [num1,  num2]}
+    {"model_name": "active_pair_model", "fragments": "ecfp.6", "pair": [num1,  num2]}
 """
 
 import json
