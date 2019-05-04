@@ -94,4 +94,5 @@ def _compute_sim(active_fragments: list, test_fragments: list) -> list:
     sim = summary / (len(active_fragments) + len(test_fragments) - summary)
     return sim
 
+
 register_model(DeleteIndexGroupModel.model_name, lambda: DeleteIndexGroupModel())
