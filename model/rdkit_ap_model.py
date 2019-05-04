@@ -6,7 +6,7 @@ library.
 Each molecule from test set is compared with all known active molecules and the highest
 similarity is that assigned to a molecule.
 input model_configuration should look like this:
-    {"model_name": "rdkit_ap_model"}
+    {"model_name": "rdkit_ap_model", "fragments": "ap"}
 """
 
 import json
