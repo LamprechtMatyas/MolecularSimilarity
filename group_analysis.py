@@ -26,21 +26,33 @@ def _main():
         with open(configuration["configuration"] + "/" + file, "r", encoding="utf-8") as input_stream:
             for new_line in input_stream:
                 line = json.loads(new_line)
-                groups.append(line["groups"])
-
-    evaluation_files = [f for f in listdir(configuration["evaluations"]) if
-                        isfile(join(configuration["evaluations"], f))]
+                if _control_groups(groups, line["groups"]):
+                    groups.append([[-1]])
+                else:
+                    groups.append(line["groups"])
+    num_of_groups = len(groups)
+    number_of_groups = 0
+    num = 0
+    while num != num_of_groups:
+        number_of_groups += 1
+        num += number_of_groups
+    number_of_groups += 1
+    groups_list = []
+    for i in range(number_of_groups - 1):
+        for j in range(i+1, number_of_groups):
+            groups_list.append([i, j])
     num = 0
     auc = baseline_results[0]
     ef1 = baseline_results[1]
     ef5 = baseline_results[2]
-    for file in evaluation_files:
-        num1 = file.split(".")
-        num2 = num1[0][10:]
-        num = int(num2)
-        with open(configuration["evaluations"] + "/" + file, "r", encoding="utf-8") as input_stream:
+    for i in range(num_of_groups):
+        first = groups_list[i][0]
+        second = groups_list[i][1]
+        with open(configuration["evaluations"] + "/evaluation" + str(first) + "_" + str(second) + ".json" , "r", encoding="utf-8") as input_stream:
             new_line = input_stream.read()
             line = json.loads(new_line)
+            if groups[num] == [[-1]]:
+                continue
             output = {
                 "groups": groups[num],
                 "AUC": line["AUC"],
@@ -155,5 +167,20 @@ def _prepare_files(output_directory: str):
         pass
   
 
+def _control_groups(groups_list: list, new_group: list) -> bool:
+    for item in groups_list:
+        same = True
+        if len(item) != len(new_group):
+            continue
+        else:
+            for i in range(len(item)):
+                if sorted(item[i]) != sorted(new_group[i]):
+                    same = False
+                    break
+            if same:
+                return True
+    return False
+            
+        
 if __name__ == "__main__":
     _main()
