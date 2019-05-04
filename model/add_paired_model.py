@@ -3,7 +3,7 @@
 Model that does that if there is only one member of pair in molecule then it adds to the molecule
 second member. This is done to actives molecules, that are separated and then to test molecules.
 input model_configuration should look like this:
-    {"model_name": "add_paired_model", "pair": [num1,  num2]}
+    {"model_name": "add_paired_model", "fragments": "ecfp.6", "pair": [num1,  num2]}
 """
 
 import json
