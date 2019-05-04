@@ -10,13 +10,8 @@ Usage:
         -c (optional input file with activity of test molecules)
         -m (input configuration json file)
         -o (output file)
-        -p (optional, type of input molecules files, default sdf)
+        -p (optional, type of input molecules files, default smi)
         -d (optional directory where to store intermediate results)
-Fragments type:
-    - tt.{SIZE}
-    - ecfp.{SIZE}
-    - fcfp.{SIZE}
-    - ap
 
 """
 import argparse
