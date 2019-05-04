@@ -3,7 +3,7 @@
 Baseline model for ecfp_pair_model, which means that we have all indexes in their own
 equivalence classes. We do this, because after that we can compare, if additing of some
 indexes into same equivalence class can be better than to have then separately.
-    {"model_name": "baseline_model"}
+    {"model_name": "baseline_model", "fragments": "ecfp.6"}
 """
 
 import json
