@@ -4,7 +4,7 @@ Model that does same hashing as is in MorganFingerprints - AllChem.GetHashedMorg
 so it hashes all active molecules and then it hashed all test molecules and for each test molecule
 it computes similarity to all active hashed molecules and it takes the highest one.
 Configuration file should look like this:
-    {"model_name": "my_nbit_hashed_ap_model", "nbits": num}
+    {"model_name": "my_nbit_hashed_ap_model", "fragments": "ecfp.6", "nbits": num}
     where num in natural number
 """
 
