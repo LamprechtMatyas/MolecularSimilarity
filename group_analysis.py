@@ -41,7 +41,6 @@ def _main():
     for i in range(number_of_groups - 1):
         for j in range(i+1, number_of_groups):
             groups_list.append([i, j])
-    num = 0
     auc = baseline_results[0]
     ef1 = baseline_results[1]
     ef5 = baseline_results[2]
@@ -51,10 +50,10 @@ def _main():
         with open(configuration["evaluations"] + "/evaluation" + str(first) + "_" + str(second) + ".json" , "r", encoding="utf-8") as input_stream:
             new_line = input_stream.read()
             line = json.loads(new_line)
-            if groups[num] == [[-1]]:
+            if groups[i] == [[-1]]:
                 continue
             output = {
-                "groups": groups[num],
+                "groups": groups[i],
                 "AUC": line["AUC"],
                 "EF1": line["EF1"],
                 "EF5": line["EF5"]
@@ -99,7 +98,6 @@ def _main():
                           "a", encoding="utf-8") as output_stream:
                     json.dump(output, output_stream)
                     output_stream.write("\n")
-            num += 1
     with open(configuration["output_directory"] + "/baseline.json", "w", encoding="utf-8") as output_stream:
         output = {
             "AUC": auc,
@@ -174,7 +172,7 @@ def _control_groups(groups_list: list, new_group: list) -> bool:
             continue
         else:
             for i in range(len(item)):
-                if sorted(item[i]) != sorted(new_group[i]):
+                if sorted(item[i]) != sorted(new_group[i]):                   
                     same = False
                     break
             if same:
