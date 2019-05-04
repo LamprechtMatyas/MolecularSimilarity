@@ -4,7 +4,7 @@ Model that uses standard machine learning method - linear regression
 It can be used for whole molecules or their fragments, but it has to be consistent.
 If we use fragments then the similarity is computed as average similarity of the descriptors.
 input model_configuration should look like this:
-    {"model_name": "linear_regression_model", "molecules": 0/1}
+    {"model_name": "linear_regression_model", "fragments": "ecfp.6", "molecules": 0/1}
     where 0 means that we use fragments, 1 means we use molecules
 """
 import json
