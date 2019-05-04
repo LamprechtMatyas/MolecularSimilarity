@@ -5,7 +5,7 @@ with the active descriptors and we compute a sum.
 If we find descriptor in active descriptors we add to the sum +num1
 and if we do not find it we add -num2
 input model_configuration should look like this:
-    {"model_name": "descriptors_model", "active_parameter": num1,"inactive_parameter": num2}
+    {"model_name": "descriptors_model", "fragments": "ecfp.6", "active_parameter": num1,"inactive_parameter": num2}
     where num1 and num2 are numbers
 """
 import json
