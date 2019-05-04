@@ -3,7 +3,7 @@
 Model that takes all indexes together and keeps each index occurrence once. We make groups
 on these indexes and then we also make groups (if we can) on test molecules.
 input model_configuration can look e.g. like this:
-    {"model_name": "ecfp_group_model", "groups": [[num1,  num2], [num3, num4, num5]}
+    {"model_name": "ecfp_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2], [num3, num4, num5]}
 """
 
 import json
