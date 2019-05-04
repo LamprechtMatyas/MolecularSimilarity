@@ -6,8 +6,8 @@ and then with inactive indexes and we compute a sum.
 If the index is only in active in indexes then we add +num1 to the sum, if the index is only
 in inactive indexes the we add -num3, otherwise we add +num2 to the sum.
 input model_configuration should look like this:
-    {"model_name": "active_inactive_index_model", "active_parameter": num1,
-    "neutral_parameter": num2,"inactive_parameter": num3}
+    {"model_name": "active_inactive_index_model", "fragments": "ecfp.6", "active_parameter": num1,
+    "neutral_parameter": num2, "inactive_parameter": num3}
     where num1, num2, num3 are numbers
 """
 import json
