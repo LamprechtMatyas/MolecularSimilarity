@@ -3,7 +3,7 @@
 Baseline model for active_pair_model.py add_paired_model.py, so after we can compare which
 paires are good to use.
 input model_configuration should look like this:
-    {"model_name": "baseline_active_pair_model"}
+    {"model_name": "baseline_active_pair_model", "fragments": "ecfp.6"}
 """
 
 import json
