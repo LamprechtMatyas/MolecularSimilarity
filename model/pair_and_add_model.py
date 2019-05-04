@@ -6,7 +6,7 @@ model and we compute similarity in this way: if test molecule has only 1 index f
 we add +2 to the similarity. This means that the maximum similarity can be 2, so we have to divide
 similarity by 2, because we want similarity between 0 and 1.
 input model_configuration should look like this:
-    {"model_name": "pair_and_add_model", "pair": [num1,num2]}
+    {"model_name": "pair_and_add_model", "fragments": "ecfp.6", "pair": [num1,num2]}
 """
 import json
 
