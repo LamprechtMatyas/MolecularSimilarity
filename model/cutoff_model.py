@@ -4,7 +4,7 @@ Model that takes all active molecules together with their indexes and keeps inde
 that appear in equal or more molecules than is cutoff. Then the score of test molecules is done
 in same way as in baseline_model.py.
 input model_configuration should look like this:
-    {"model_name": "cutoff_model", "cutoff": num}
+    {"model_name": "cutoff_model", "fragments": "ecfp.6", "cutoff": num}
     num is number of percent
 """
 
