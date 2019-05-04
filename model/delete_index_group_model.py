@@ -8,7 +8,7 @@ it is first value.
 Then we do the same thing to all test molecules and we compute max-fusion
 similarity.
 input model_configuration could like e.g like this:
-    {"model_name": "delete_index_group_model", "groups": [[num1,  num2, num3], [num4, num5, num6]]}}
+    {"model_name": "delete_index_group_model", "fragments": "ecfp.6", "groups": [[num1,  num2, num3], [num4, num5, num6]]}}
 """
 
 import json
