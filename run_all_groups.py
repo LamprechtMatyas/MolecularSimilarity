@@ -7,6 +7,8 @@ import argparse
 import json
 import multiprocessing
 import os
+from os import listdir
+from os.path import isfile, join
 
 import inputoutput_utils
 import model_factory
@@ -71,6 +73,10 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
                               cpu_counts: int, cutoff_val: int) -> tuple:
     groups = []
     inputoutput_utils.create_parent_directory(output_directory + "/configurationfiles/0")
+    files = [f for f in listdir(output_directory + "/configurationfiles") if
+                 isfile(join(output_directory + "/configurationfiles", f))]
+    for file in files:
+        os.remove(output_directory + "/configurationfiles/" + file)             
     with open(group_file, "r", encoding="utf-8") as input_stream:
         for new_line in input_stream:
             line = json.loads(new_line)
