@@ -19,22 +19,20 @@ import compute_evaluation
 def _main():
     cpu_counts = multiprocessing.cpu_count()
     configuration = _read_configuration()
-    configuration = _read_configuration()
     if int(configuration["num_cores"]) > cpu_counts:
         print("You have only " + str(cpu_counts) + " cores")
         exit(1)
     else:
         cpu_counts = int(configuration["num_cores"])   
-    ranges, num_of_groups = _make_configuration_files(configuration["groups"],
+    maximal_num = _make_configuration_files(configuration["groups"],
                                        configuration["output_directory"], configuration["model"],
                                        cpu_counts, configuration["cutoff"])
 
-    num_groups = _make_list(num_of_groups)
     for i in range(cpu_counts):
         process = multiprocessing.Process(target=_model_and_score_and_evaluate,
                                           args=(configuration["active_fragments"],
                                           configuration["test_fragments"], configuration["test_activity"],
-                                          i, configuration["output_directory"], ranges, num_groups))
+                                          i, configuration["output_directory"], maximal_num))
         process.start()
 
 
@@ -70,13 +68,38 @@ def _read_configuration():
 
 
 def _make_configuration_files(group_file: str, output_directory: str, model_name: str,
-                              cpu_counts: int, cutoff_val: int) -> tuple:
+                              cpu_counts: int, cutoff_val: int) -> int:
     groups = []
     inputoutput_utils.create_parent_directory(output_directory + "/configurationfiles/0")
+    inputoutput_utils.create_parent_directory(output_directory + "/evaluations/0")
     files = [f for f in listdir(output_directory + "/configurationfiles") if
                  isfile(join(output_directory + "/configurationfiles", f))]
+    num_of_config = 0
     for file in files:
-        os.remove(output_directory + "/configurationfiles/" + file)             
+        with open(output_directory + "/configurationfiles/" + file, "r", encoding="utf-8") as input_stream:
+            for new_line in input_stream:
+                num_of_config += 1
+    config_files = []
+    for file in files:
+        first_part = file.split("_")[0]
+        config_files.append(int(first_part[13:]))
+    if num_of_config == 0:
+        maximal_num = 0
+    else:
+        maximal_num = max(config_files)
+    evaluation_files = [f for f in listdir(output_directory + "/evaluations") if
+                        isfile(join(output_directory + "/evaluations", f))]
+    if len(evaluation_files) != num_of_config:   
+        num_of_max_num = 0
+        for item in config_files:
+            if item == maximal_num:
+                num_of_max_num += 1
+        if num_of_max_num != cpu_counts:
+            print("Please run the program as before on " + str(num_of_max_num) + " cores")
+            exit(1)
+        else:
+            return maximal_num
+    
     with open(group_file, "r", encoding="utf-8") as input_stream:
         for new_line in input_stream:
             line = json.loads(new_line)
@@ -115,27 +138,39 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
             else:
                 group_list.append(groups1 + groups2)
 
+    for file in files:
+        with open(output_directory + "/configurationfiles/" + file, "r", encoding="utf-8") as input_stream:
+            for new_line in input_stream:
+                line = json.loads(new_line)
+                grupeto = line["groups"]
+                for i in range(len(group_list)):
+                    if grupeto == group_list[i]:
+                        group_list.remove(grupeto)
+                        break
+    
     number = len(group_list) // cpu_counts
     ranges = []
     for i in range(cpu_counts):
         ranges.append(i * number)
     ranges.append(len(group_list))
-
+    maximal_num += 1
     for i in range(cpu_counts):
-        output_file = output_directory + "/configurationfiles/configuration" + str(i) + ".json"
+        output_file = output_directory + "/configurationfiles/configuration" + str(maximal_num) + "_" + str(i) + ".json"
         first = True
         with open(output_file, "w", encoding="utf-8") as output_stream:
             for j in range(ranges[i], ranges[i+1]):
                 if cutoff_val == -1:
                     model = {
                         "model_name": model_name,
-                        "groups": group_list[j]
+                        "groups": group_list[j],
+                        "evaluation": "evaluation" + str(maximal_num) + "_" + str(j) + ".json"
                     }
                 else:
                     model = {
                         "model_name": model_name,
                         "cutoff": cutoff_val,
-                        "groups": group_list[j]
+                        "groups": group_list[j],
+                        "evaluation": "evaluation" + str(maximal_num) + "_" + str(j) + ".json"
                     }
                 if first:
                     first = False
@@ -143,7 +178,7 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
                     output_stream.write("\n")
                 json.dump(model, output_stream)
 
-    return ranges, num_of_groups
+    return maximal_num
 
 
 def _control_intersection(groups1: list, groups2: list) -> bool:
@@ -205,49 +240,36 @@ def _one_group_intersection(groups: list) -> list:
             if founded:
                 break
     return groups
-
-
-def _make_list(num_groups) -> list:
-    groups = []
-    for i in range(num_groups-1):
-        for j in range(i+1, num_groups):
-            groups.append([i, j])
-    return groups
     
 
 def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, test_activity: str,
-                                  num: int, output_directory: str, ranges: list, num_groups: list):
+                                  num: int, output_directory: str, maximal_num: int):
     inputoutput_utils.create_parent_directory(output_directory + "/scorefiles/0")
     inputoutput_utils.create_parent_directory(output_directory + "/activities/0")
-    inputoutput_utils.create_parent_directory(output_directory + "/evaluations/0")
-    count = ranges[num]
-    with open(output_directory + "/configurationfiles/configuration" + str(num) + ".json", "r",
+    with open(output_directory + "/configurationfiles/configuration" + str(maximal_num) + "_" + str(num) + ".json", "r",
               encoding="utf-8") as input_file:
-        for new_line in input_file: 
-            first_num = num_groups[count][0]
-            second_num = num_groups[count][1] 
-            if os.path.isfile(output_directory + "/evaluations/evaluation" + str(first_num) + "_" + str(second_num) + ".json"):
-                count += 1
-                continue
+        for new_line in input_file:
             line = json.loads(new_line)
+            if os.path.isfile(output_directory + "/evaluations/" + line["evaluation"]):
+                continue 
+            
             new_model = model_factory.create_model(line["model_name"])
             model = new_model.create_model(active_fragments, "", "", "",
                                            line)
             new_model.score_model(model, test_fragments, "",
-                                  output_directory + "/scorefiles/score" + str(first_num) + "_" + str(second_num) + ".json")
+                                  output_directory + "/scorefiles/score" + line["evaluation"])
 
             # run add_activity
             activity = add_activity.read_activity(test_activity)
-            add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + str(first_num) + "_" + str(second_num) + ".json",
+            add_activity.add_activity_and_write_to_json(output_directory + "/scorefiles/score" + line["evaluation"],
                                                         activity,
-                                                        output_directory + "/activities/activity" + str(first_num) + "_" + str(second_num) + ".json")
+                                                        output_directory + "/activities/activity" + line["evaluation"])
 
             # run compute_evaluation
             score_act = compute_evaluation.read_file_with_score_and_activity(output_directory + "/activities/activity"
-                                                                            + str(first_num) + "_" + str(second_num) + ".json")
+                                                                            + line["evaluation"])
             activity = compute_evaluation.sort_activity(score_act)
-            compute_evaluation.evaluation(activity, output_directory + "/evaluations/evaluation" + str(first_num) + "_" + str(second_num) + ".json")
-            count += 1
+            compute_evaluation.evaluation(activity, output_directory + "/evaluations/" + line["evaluation"])
 
 
 if __name__ == "__main__":
