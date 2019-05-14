@@ -22,6 +22,9 @@ def _main():
     files = [f for f in listdir(configuration["configuration"]) if
                  isfile(join(configuration["configuration"], f))]
     groups = []
+    auc = baseline_results[0]
+    ef1 = baseline_results[1]
+    ef5 = baseline_results[2] 
     for file in files:
         with open(configuration["configuration"] + "/" + file, "r", encoding="utf-8") as input_stream:
             for new_line in input_stream:
@@ -29,75 +32,57 @@ def _main():
                 if _control_groups(groups, line["groups"]):
                     groups.append([[-1]])
                 else:
-                    groups.append(line["groups"])
-    num_of_groups = len(groups)
-    number_of_groups = 0
-    num = 0
-    while num != num_of_groups:
-        number_of_groups += 1
-        num += number_of_groups
-    number_of_groups += 1
-    groups_list = []
-    for i in range(number_of_groups - 1):
-        for j in range(i+1, number_of_groups):
-            groups_list.append([i, j])
-    auc = baseline_results[0]
-    ef1 = baseline_results[1]
-    ef5 = baseline_results[2]
-    for i in range(num_of_groups):
-        first = groups_list[i][0]
-        second = groups_list[i][1]
-        with open(configuration["evaluations"] + "/evaluation" + str(first) + "_" + str(second) + ".json" , "r", encoding="utf-8") as input_stream:
-            new_line = input_stream.read()
-            line = json.loads(new_line)
-            if groups[i] == [[-1]]:
-                continue
-            output = {
-                "groups": groups[i],
-                "AUC": line["AUC"],
-                "EF1": line["EF1"],
-                "EF5": line["EF5"]
-            }
-            if (line["AUC"] > auc) and (line["EF1"] > ef1) and (line["EF5"] > ef5):
-                with open(configuration["output_directory"] + "/aucef1ef5.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if (line["AUC"] > auc) and (line["EF1"] > ef1):
-                with open(configuration["output_directory"] + "/aucef1.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if (line["AUC"] > auc) and (line["EF5"] > ef5):
-                with open(configuration["output_directory"] + "/aucef5.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if (line["EF1"] > ef1) and (line["EF5"] > ef5):
-                with open(configuration["output_directory"] + "/ef1ef5.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if line["AUC"] > auc:
-                with open(configuration["output_directory"] + "/auc.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if line["EF5"] > ef5:
-                with open(configuration["output_directory"] + "/ef5.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if line["EF1"] > ef1:
-                with open(configuration["output_directory"] + "/ef1.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
-            if (line["AUC"] > auc) or (line["EF1"] > ef1) or (line["EF5"] > ef5):
-                with open(configuration["output_directory"] + "/greater.json",
-                          "a", encoding="utf-8") as output_stream:
-                    json.dump(output, output_stream)
-                    output_stream.write("\n")
+                    groups.append(line["groups"]) 
+                    with open(configuration["evaluations"] + "/" + line["evaluation"], "r", encoding="utf-8") as evaluation_stream:
+                        new_line_eval = evaluation_stream.read()
+                        line_eval = json.loads(new_line_eval)
+                        output = {
+                            "groups": line["groups"],
+                            "AUC": line_eval["AUC"],
+                            "EF1": line_eval["EF1"],
+                            "EF5": line_eval["EF5"]
+                        }
+                        if (line_eval["AUC"] > auc) and (line_eval["EF1"] > ef1) and (line_eval["EF5"] > ef5):
+                            with open(configuration["output_directory"] + "/aucef1ef5.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if (line_eval["AUC"] > auc) and (line_eval["EF1"] > ef1):
+                            with open(configuration["output_directory"] + "/aucef1.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if (line_eval["AUC"] > auc) and (line_eval["EF5"] > ef5):
+                            with open(configuration["output_directory"] + "/aucef5.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if (line_eval["EF1"] > ef1) and (line_eval["EF5"] > ef5):
+                            with open(configuration["output_directory"] + "/ef1ef5.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if line_eval["AUC"] > auc:
+                            with open(configuration["output_directory"] + "/auc.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if line_eval["EF5"] > ef5:
+                            with open(configuration["output_directory"] + "/ef5.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if line_eval["EF1"] > ef1:
+                            with open(configuration["output_directory"] + "/ef1.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        if (line_eval["AUC"] > auc) or (line_eval["EF1"] > ef1) or (line_eval["EF5"] > ef5):
+                            with open(configuration["output_directory"] + "/greater.json",
+                                      "a", encoding="utf-8") as output_stream:
+                                json.dump(output, output_stream)
+                                output_stream.write("\n")
+                        
     with open(configuration["output_directory"] + "/baseline.json", "w", encoding="utf-8") as output_stream:
         output = {
             "AUC": auc,
