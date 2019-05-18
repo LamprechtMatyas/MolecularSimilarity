@@ -63,7 +63,7 @@ class CutOffModel(IModel):
     def save_to_json_file(self, output_file: str, model: dict):
         inputoutput_utils.save_to_json_file(output_file, model)
 
-    def score_model(self, model_configuration: list, fragments_file: str,
+    def score_model(self, model_configuration: dict, fragments_file: str,
                     descriptors_file: str, output_file: str):
 
         baseline_model = baseline.BaselineModel()
