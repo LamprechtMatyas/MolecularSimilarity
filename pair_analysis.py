@@ -17,7 +17,7 @@ import inputoutput_utils
 def _main():
     configuration = _read_configuration()
     active_indexes = []
-    with open(configuration["input_fragments"]) as input_stream:
+    with open(configuration["input_fragments"], "r", encoding="utf-8") as input_stream:
         for new_line in input_stream:
             line = json.loads(new_line)
             for fragment in line["fragments"]:
@@ -45,7 +45,7 @@ def _main():
         with open(configuration["input_directory"] + "/" + file,
                   "r", encoding="utf-8") as input_stream:
             file_str = file.split(".")[0]
-            num = int(file_str[10:])
+            num = int(file_str[10:])     
             for new_line in input_stream:
                 line = json.loads(new_line)
                 output = {
@@ -53,7 +53,7 @@ def _main():
                     "AUC": line["AUC"],
                     "EF1": line["EF1"],
                     "EF5": line["EF5"]
-                }
+                } 
                 if (line["AUC"] > auc) and (line["EF1"] > ef1) and(line["EF5"] > ef5):
                     with open(configuration["output_directory"] + "/aucef1ef5.json",
                               "a", encoding="utf-8") as output_stream:
