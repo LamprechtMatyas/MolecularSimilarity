@@ -1,1 +1,2 @@
 active_index_model for different fingerprints
+k1 = 1, k2 = 1
