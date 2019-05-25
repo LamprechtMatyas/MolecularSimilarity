@@ -1,0 +1,1 @@
+Comparison of ECFP fingerprints with different values of fragment diameter.

@@ -1,0 +1,2 @@
+Comparison of different nbits.
+There is always ecfp and then the number used for nbit. 
