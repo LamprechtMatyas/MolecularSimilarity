@@ -36,7 +36,7 @@ def _main():
     try:
         new_model = model_factory.create_model(model_configuration["model_name"])
     except:
-        print("Wrong name of a model!!")
+        print("Model does not exist!")
         exit(1)
         
     if "kekule" not in model_configuration:
