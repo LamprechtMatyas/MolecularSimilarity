@@ -1,2 +1,1 @@
-Comparison of different nbits.
-There is always fcfp and then the number used for nbit. 
+Comparison of different FCFP4 nbits. 
