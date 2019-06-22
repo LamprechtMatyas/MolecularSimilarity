@@ -1,2 +1,1 @@
-Comparison of different nbits.
-There is always ecfp and then the number used for nbit. 
+Comparison of different nbits for ECFP4.
