@@ -34,7 +34,7 @@ class GroupAndAddModel(IModel):
     def save_to_json_file(self, output_file: str, model: dict):
         inputoutput_utils.save_to_json_file(output_file, model)
 
-    def score_model(self, model_configuration: dict, fragments_file: str,
+    def score_model(self, model_configuration: list, fragments_file: str,
                     descriptors_file: str, output_file: str):
         inputoutput_utils.create_parent_directory(output_file)
         first_line = True
@@ -77,7 +77,7 @@ def _make_group_indexes(fragments: dict, groups: list) -> list:
 
 
 def _compute_sim(active_fragments: list, test_fragments: list, groups: list) -> list:
-    groups_len = 0
+    groups_len = 1
     for item in groups:
         groups_len += len(item)
     summary = 0
@@ -93,6 +93,8 @@ def _compute_sim(active_fragments: list, test_fragments: list, groups: list) -> 
                     break
             if founded:
                 summary += len(group)
+    if groups_len == 0:
+        groups_len = 1
     sim = summary / (groups_len*(len(active_fragments) + len(test_fragments) - summary))
     return sim
 
