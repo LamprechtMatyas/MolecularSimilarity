@@ -134,9 +134,11 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
                 new_group = groups11.copy()
                 if groups2 != []:
                     new_group.extend(groups2)
-                group_list.append(new_group)
+                if _control_groups(group_list, new_group) is False:
+                    group_list.append(new_group)
             else:
-                group_list.append(groups1 + groups2)
+                if _control_groups(group_list, groups1 + groups2) is False:
+                    group_list.append(groups1 + groups2)
 
     for file in files:
         with open(output_directory + "/configurationfiles/" + file, "r", encoding="utf-8") as input_stream:
@@ -241,7 +243,22 @@ def _one_group_intersection(groups: list) -> list:
                 break
     return groups
     
-
+ 
+def _control_groups(groups_list: list, new_group: list) -> bool:
+    for item in groups_list:
+        same = True
+        if len(item) != len(new_group):
+            continue
+        else:
+            for i in range(len(item)):
+                if sorted(item[i]) != sorted(new_group[i]):                   
+                    same = False
+                    break
+            if same:
+                return True
+    return False
+    
+    
 def _model_and_score_and_evaluate(active_fragments: str, test_fragments: str, test_activity: str,
                                   num: int, output_directory: str, maximal_num: int):
     inputoutput_utils.create_parent_directory(output_directory + "/scorefiles/0")
