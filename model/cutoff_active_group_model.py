@@ -15,8 +15,6 @@ from model_interface import IModel
 from model_factory import register_model
 import inputoutput_utils
 
-import model.active_pair_model as pair_model
-
 
 class CutoffActiveGroupModel(IModel):
     model_name = "cutoff_active_group_model"
