@@ -17,8 +17,6 @@ from model_interface import IModel
 from model_factory import register_model
 import inputoutput_utils
 
-import model.add_paired_model as paired_model
-
 
 class CutoffAddGroupModel(IModel):
     model_name = "cutoff_and_group_model"
