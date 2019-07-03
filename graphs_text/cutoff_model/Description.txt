@@ -1,3 +1,0 @@
-Comparism of fingerprints and their cutoffs. 
-So e.g.
-   ap_80 means that we used indexes from AP and cutoff = 80%

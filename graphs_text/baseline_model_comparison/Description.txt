@@ -1,5 +1,0 @@
-Comparison of baseline models.
-the acronym:
-   zmis stands for baseline_model
-   zmid stands for baseline_active_pair_model
-   zmo  stands for cutoff_model

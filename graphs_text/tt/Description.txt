@@ -1,1 +1,0 @@
-Comparison of topological torsion fingerprints with different values of fragment length.
