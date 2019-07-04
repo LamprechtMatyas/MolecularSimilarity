@@ -107,6 +107,12 @@ def _make_configuration_files(group_file: str, output_directory: str, model_name
 
     num_of_groups = len(groups)
     group_list = []
+    for file in files:
+        with open(output_directory + "/configurationfiles/" + file, "r", encoding="utf-8") as input_stream:
+            for new_line in input_stream:
+                line = json.loads(new_line)
+                group_list.append(line["groups"])
+                
     for i in range(len(groups)-1):
         for j in range(i+1, len(groups)):
             groups1 = groups[i].copy()
