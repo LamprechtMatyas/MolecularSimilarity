@@ -35,7 +35,7 @@ def _read_configuration() -> dict:
     parser.add_argument("-t", type=str, dest="type",
                         help="type of graph", required=True)
     parser.add_argument("-d", dest="directory",
-                        help="directory where to store graph", required=False)
+                        help="directory where to store graph", required=True)
 
     configuration = vars(parser.parse_args())
 
