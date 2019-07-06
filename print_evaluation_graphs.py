@@ -31,7 +31,7 @@ def _read_configuration() -> dict:
                         help="input nicknames for files that will be printed in some graphs",
                         required=True)
     parser.add_argument("-d", dest="directory",
-                        help="directory where to store graphs results", required=False)
+                        help="directory where to store graphs results", required=True)
 
     configuration = vars(parser.parse_args())
 
