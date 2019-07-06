@@ -257,9 +257,13 @@ def _control_groups(groups_list: list, new_group: list) -> bool:
             continue
         else:
             for i in range(len(item)):
-                if sorted(item[i]) != sorted(new_group[i]):                   
+                same1 = False
+                for j in range(len(new_group)):
+                    if sorted(item[i]) == sorted(new_group[j]):
+                        same1 = True
+                        break
+                if same1 is False:
                     same = False
-                    break
             if same:
                 return True
     return False
