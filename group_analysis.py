@@ -143,22 +143,7 @@ def _prepare_files(output_directory: str):
         pass
     with open(output_directory + "/greater.json", "w", encoding="utf-8"):
         pass
-  
-
-def _control_groups(groups_list: list, new_group: list) -> bool:
-    for item in groups_list:
-        same = True
-        if len(item) != len(new_group):
-            continue
-        else:
-            for i in range(len(item)):
-                if sorted(item[i]) != sorted(new_group[i]):                   
-                    same = False
-                    break
-            if same:
-                return True
-    return False
-            
+              
         
 if __name__ == "__main__":
     _main()
