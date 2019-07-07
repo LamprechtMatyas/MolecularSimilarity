@@ -127,6 +127,8 @@ def _print_boxplot(input_file: str, output_directory: str, auc: list):
     for item in sorted_index_auc:
         plt.boxplot(item[1:])
         plt.xticks([])
+        plt.ylabel("AUC")
+        plt.tight_layout()
         plt.savefig(output_directory + "/" + str(item[0]) + ".png")
         plt.figure()
         plt.close("all")
