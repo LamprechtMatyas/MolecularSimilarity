@@ -106,7 +106,9 @@ def _print_boxplots(input_files: list, nicknames: list, output_directory: str):
         xaxis.append(i+2)
     for index in index_auc:
         name = index[0]
-        plt.boxplot(index[1:], labels=nicknames)  
+        plt.boxplot(index[1:], labels=nicknames) 
+        plt.ylabel("AUC")
+        plt.tight_layout() 
         plt.savefig(output_directory + "/" +str(name), dpi=1000)
         plt.figure()
         plt.close("all")
